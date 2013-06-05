@@ -1,7 +1,7 @@
 curator
 =======
 
-GUI library designer for the Librarian API.
+GUI and CLI library designer for the Librarian API.
 
 Curator allows for simple card design and storage in a Librarian library
 database. To enable highly general use Curator will do nothing more then allow
