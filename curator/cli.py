@@ -5,7 +5,6 @@ __email__ = 'nekroze@eturnilnetwork.com'
 import os
 import sys
 from librarian.library import Library
-from librarian.card import Card
 
 
 def readinput(prefix):
