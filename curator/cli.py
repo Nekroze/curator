@@ -39,7 +39,7 @@ class CLI(object):
                          "list": self.list,
                          "help": self.help}
 
-    def quit(self, *args):
+    def quit(self, *_):
         """Save all changes and exit."""
         self.running = False
 
@@ -68,7 +68,7 @@ class CLI(object):
             card = self.library.load_card(code, False)
             print("{0}: {1}".format((card.code, card.name)))
 
-    def help(self):
+    def help(self, *_):
         """Display information on possible top level commands."""
         for key, value in self.commands.items():
             print("{0}: {1}".format((key, value.__doc__)))
@@ -89,4 +89,4 @@ class CLI(object):
                 self.help()
                 continue
             else:
-                self.commands[command](parts)
+                self.commands[command](args)
