@@ -127,7 +127,7 @@ class PyPiUpload(Command):
             sys.exit(1)
         print('PyPi Upload successful.')
 
-			
+
 vRe = re.compile(r'__version__\s*=\s*(\S+)', re.M)
 data = open('setup.py').read()
 
@@ -152,6 +152,7 @@ setup(
     url=PROJECTSITE,
     platforms=PLATFORMS,
     packages=[SOURCE],
+    scripts=["curator-cli"],
     ext_modules = EXTENSIONS,
     classifiers=[
         # DEFINE YOURSELF

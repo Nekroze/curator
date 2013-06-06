@@ -56,7 +56,7 @@ class CLI(object):
                 loadstring = libdb.execute(
                     "SELECT card FROM CARDS WHERE code = ?", (args[0]))
 
-        card = CLE(loadstring=loadstring)
+        card = CLE(loadstring=loadstring).top_level()
         if card is None:
             return None
 
@@ -66,7 +66,7 @@ class CLI(object):
         if card.code in codes:
             with self.library.connection() as libdb:
                 libdb.execute("DELETE from CARDS where code = ?", (card.code))
-        self.Library.save_card(card)
+        self.library.save_card(card)
 
     def list(self, *args):
         """

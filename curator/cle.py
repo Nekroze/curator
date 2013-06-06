@@ -2,8 +2,6 @@
 from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
-import os
-import sys
 from librarian.card import Card
 from .cli import readinput, clear
 
@@ -15,7 +13,6 @@ class CLE(object):
         Can take up to two arguments to define the code and name of the new
         card before starting the edit although it is optional.
         """
-        self.library = library
         self.running = True
         self.commands = {"commit": self.commit,
                          "cancel": self.cancel,
@@ -27,7 +24,7 @@ class CLE(object):
         """Save all changes and exit."""
         self.running = False
 
-    def commit(self, *_):
+    def cancel(self, *_):
         """Exit without saving changes."""
         self.card = None
         self.running = False
@@ -39,7 +36,7 @@ class CLE(object):
 
     def top_level(self):
         """
-        The top level of the command line editor for cards. Simply interprets
+        The command line editor for cards. Simply interprets
         commands until quit at which time it returns the edited card.
         """
         while self.running:
