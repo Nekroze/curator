@@ -1,4 +1,4 @@
-
+*.stackdump
 *.py[cod]
 
 # C extensions

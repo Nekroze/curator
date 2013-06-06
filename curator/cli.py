@@ -39,18 +39,18 @@ class CLI(object):
                          "list": self.list,
                          "help": self.help}
 
-    def quit(self):
+    def quit(self, *args):
         """Save all changes and exit."""
         self.running = False
 
-    def edit(self):
+    def edit(self, *args):
         """
         Edit a card. Will ask for a code and create a card if the code is
         unused.
         """
         pass
 
-    def list(self):
+    def list(self, *args):
         """
         List all registered card codes and their names. A code prefix may be
         entered to limit the selection.
@@ -68,10 +68,14 @@ class CLI(object):
         commands until quit.
         """
         while self.running:
-            command = readinput("|>")
+            string = readinput("|>")
+            parts = string.split(string, " ")
+            command = parts[0]
+            args = [] if len(parts) > 1 else parts[1:]
+            
             clear()
             if command not in self.commands:
                 self.help()
                 continue
             else:
-                self.commands[command]()
+                self.commands[command](parts)
