@@ -26,11 +26,12 @@ def clear():
 
 class CLI(object):
     """The command line inteface."""
-    def __init__(self, dbname="library.lbr"):
+    def __init__(self, dbname=None):
         """
         Takes a filename for the database and will create it and any required
         tables if the database filename doesnt exist.
         """
+        dbname = "library.lbr" if dbname is None else dbname
         self.library = Library(dbname)
         if not os.path.exists(dbname):
             self.library.create_db()
