@@ -42,7 +42,9 @@ class CLI(object):
                          "help": self.help}
 
     def quit(self, *_):
-        """Save all changes and exit."""
+        """
+        Save all changes and gracefully exit.
+        """
         self.running = False
 
     def edit(self, *args):
@@ -87,21 +89,24 @@ class CLI(object):
 
         for code in codes:
             card = self.library.load_card(code, False)
-            print("{0}: {1}".format((card.code, card.name)))
+            print("{0}: {1}".format(card.code, card.name))
 
     def help(self, *_):
-        """Display information on possible top level commands."""
+        """
+        Display information on possible top level commands.
+        """
         for key, value in self.commands.items():
-            print("{0}: {1}".format((key, value.__doc__)))
+            print("{0}: {1}".format(key, value.__doc__))
 
     def top_level(self):
         """
         The top level of the command line interface. Simply interprets
         commands until quit.
         """
+        clear()
         while self.running:
             string = readinput("|>")
-            parts = string.split(string, " ")
+            parts = string.split(" ")
             command = parts[0]
             args = [] if len(parts) > 1 else parts[1:]
 

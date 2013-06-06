@@ -58,7 +58,7 @@ class CLE(object):
         """
         while self.running:
             string = readinput("|>")
-            parts = string.split(string, " ")
+            parts = string.split(" ")
             command = parts[0]
             args = [] if len(parts) > 1 else parts[1:]
 
