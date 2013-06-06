@@ -56,11 +56,11 @@ class CLI(object):
         entered to limit the selection.
         """
         codes = []
-        with self.library.connect as libdb:
+        with self.library.connection() as libdb:
             if args:
                 codes = libdb.execute(
                     "SELECT code FROM CARDS WHERE code like ?",
-                    ( "{0}%".format((args[0])) ) )
+                    ("{0}%".format((args[0]))))
             else:
                 codes = libdb.execute("SELECT code FROM CARDS")
 
