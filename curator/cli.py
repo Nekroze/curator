@@ -55,7 +55,18 @@ class CLI(object):
         List all registered card codes and their names. A code prefix may be
         entered to limit the selection.
         """
-        pass
+        codes = []
+        with self.library.connect as libdb:
+            if args:
+                codes = libdb.execute(
+                    "SELECT code FROM CARDS WHERE code like ?",
+                    ( "{0}%".format((args[0])) ) )
+            else:
+                codes = libdb.execute("SELECT code FROM CARDS")
+
+        for code in codes:
+            card = self.library.load_card(code, False)
+            print("{0}: {1}".format((card.code, card.name)))
 
     def help(self):
         """Display information on possible top level commands."""
@@ -72,7 +83,7 @@ class CLI(object):
             parts = string.split(string, " ")
             command = parts[0]
             args = [] if len(parts) > 1 else parts[1:]
-            
+
             clear()
             if command not in self.commands:
                 self.help()
