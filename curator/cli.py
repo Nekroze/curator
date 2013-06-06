@@ -5,6 +5,7 @@ __email__ = 'nekroze@eturnilnetwork.com'
 import os
 import sys
 from librarian.library import Library
+from .cle import CLE
 
 
 def readinput(prefix):
@@ -48,7 +49,9 @@ class CLI(object):
         Edit a card. Will ask for a code and create a card if the code is
         unused.
         """
-        pass
+        card = CLE(*args)
+        if card is not None:
+            self.Library.save_card(card)
 
     def list(self, *args):
         """
