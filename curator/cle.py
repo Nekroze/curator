@@ -10,7 +10,7 @@ from .cli import readinput, clear
 
 class CLE(object):
     """The command line editor for cards."""
-    def __init__(self, *args):
+    def __init__(self, loadstring=None):
         """
         Can take up to two arguments to define the code and name of the new
         card before starting the edit although it is optional.
@@ -21,12 +21,7 @@ class CLE(object):
                          "cancel": self.cancel,
                          "help": self.help
                          }
-        if len(args) > 1:
-            self.card = Card(int(args[0]), args[1])
-        elif len(args) == 1:
-            self.card = Card(int(args[0]))
-        else:
-            self.card = Card()
+        self.card = Card(loadstring=loadstring)
 
     def commit(self, *_):
         """Save all changes and exit."""

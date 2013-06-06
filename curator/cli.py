@@ -49,9 +49,23 @@ class CLI(object):
         Edit a card. Will ask for a code and create a card if the code is
         unused.
         """
-        card = CLE(*args)
-        if card is not None:
-            self.Library.save_card(card)
+        loadstring = None
+        if len(args):
+            with self.library.connection() as libdb:
+                loadstring = libdb.execute(
+                    "SELECT card FROM CARDS WHERE code = ?", (args[0]))
+
+        card = CLE(loadstring=loadstring)
+        if card is None:
+            return None
+
+        with self.library.connection() as libdb:
+            codes = libdb.execute("SELECT code FROM CARDS")
+
+        if card.code in codes:
+            with self.library.connection() as libdb:
+                libdb.execute("DELETE from CARDS where code = ?", (card.code))
+        self.Library.save_card(card)
 
     def list(self, *args):
         """
@@ -66,6 +80,9 @@ class CLI(object):
                     ("{0}%".format((args[0]))))
             else:
                 codes = libdb.execute("SELECT code FROM CARDS")
+
+        if not len(codes):
+            print("No cards could be found")
 
         for code in codes:
             card = self.library.load_card(code, False)
