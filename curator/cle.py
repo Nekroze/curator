@@ -2,8 +2,25 @@
 from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
+import os
+import sys
 from librarian.card import Card
-from .cli import readinput, clear
+
+
+def readinput(prefix):
+    """Python version independent input reading."""
+    if sys.version_info > (3, 0):
+        return input(prefix)
+    else:
+        return raw_input(prefix)
+
+
+def clear():
+    """Platform independent clear console screen."""
+    if "windows" not in sys.platform.lower():
+        os.system("clear")
+    else:
+        os.system("cls")
 
 
 class CLE(object):
