@@ -53,7 +53,7 @@ class CLE(Console):
             self.card.code = int(args[0])
         else:
             print("Input new code.")
-            self.card.code = int(readinput(self.prompt))
+            self.card.code = int(readinput("|>"))
         self.header()
 
     def do_name(self, args):
@@ -63,7 +63,7 @@ class CLE(Console):
             self.card.name = " ".join(args)
         else:
             print("Input new name.")
-            self.card.name = readinput(self.prompt)
+            self.card.name = readinput("|>")
         self.header()
 
     def do_attribute(self, args):
@@ -73,7 +73,7 @@ class CLE(Console):
             self.card.add_attribute(" ".join(args))
         else:
             print("Input attribute.")
-            self.card.add_attribute(readinput(self.prompt))
+            self.card.add_attribute(readinput("|>"))
         self.header()
 
     def do_ability(self, args):
@@ -86,9 +86,9 @@ class CLE(Console):
                 self.do_ability(self, None)
         else:
             print("Input phase for ability.")
-            phase = readinput(self.prompt)
+            phase = readinput("|>")
             print("Input ability.")
-            ability = readinput(self.prompt)
+            ability = readinput("|>")
             self.card.add_ability(phase, ability)
         self.header()
 
@@ -102,9 +102,9 @@ class CLE(Console):
                 self.do_info(self, None)
         else:
             print("Input info key.")
-            key = readinput(self.prompt)
+            key = readinput("|>")
             print("Input info value.")
-            value = readinput(self.prompt)
+            value = readinput("|>")
             self.card.set_info(key, value, True)
         self.header()
 
@@ -139,26 +139,26 @@ class CLE(Console):
                 return self.header()
 
         print("Field")
-        field = readinput(self.prompt)
+        field = readinput("|>")
 
         if field == "attribute":
             print("Index")
-            index = readinput(self.prompt)
+            index = readinput("|>")
             del self.card.attributes[int(index)]
         elif field == "ability":
             print("Key")
-            key = readinput(self.prompt)
+            key = readinput("|>")
             print("Index")
-            index = readinput(self.prompt)
+            index = readinput("|>")
             if index:
                 del self.card.abilities[key][int(index)]
             else:
                 del self.card.abilities[key]
         elif field == "info":
             print("Key")
-            key = readinput(self.prompt)
+            key = readinput("|>")
             print("Index")
-            index = readinput(self.prompt)
+            index = readinput("|>")
             if index:
                 del self.card.info[key][int(index)]
             else:
