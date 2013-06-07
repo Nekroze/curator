@@ -47,124 +47,84 @@ class CLE(Console):
         return -1
 
     def do_code(self, args):
-        """Input a new code for the current card."""
+        """``code <newcode>`` Set the card code to <newcode>."""
         if args:
             args = [arg.strip() for arg in args.split()]
             self.card.code = int(args[0])
-        else:
-            print("Input new code.")
-            self.card.code = int(readinput("|>"))
         self.header()
 
     def do_name(self, args):
-        """Input a new name for the current card."""
+        """``name <newname>`` Set the card name to <newname>."""
         if args:
             args = [arg.strip() for arg in args.split()]
             self.card.name = " ".join(args)
-        else:
-            print("Input new name.")
-            self.card.name = readinput("|>")
         self.header()
 
     def do_attribute(self, args):
-        """Add a new attribute."""
+        """``attribute <attr>`` Add <attr> to this cards attributes."""
         if args:
             args = [arg.strip() for arg in args.split()]
             self.card.add_attribute(" ".join(args))
-        else:
-            print("Input attribute.")
-            self.card.add_attribute(readinput("|>"))
         self.header()
 
     def do_ability(self, args):
-        """Add a new ability."""
+        """``ability <phase> <abi>`` Add <abi> to this cards abilities under
+        <phase>."""
         if args:
             args = [arg.strip() for arg in args.split()]
             if len(args) > 1:
                 self.card.add_ability(args[0], " ".join(args[1:]))
             else:
                 self.do_ability(self, None)
-        else:
-            print("Input phase for ability.")
-            phase = readinput("|>")
-            print("Input ability.")
-            ability = readinput("|>")
-            self.card.add_ability(phase, ability)
         self.header()
 
     def do_info(self, args):
-        """Add a new info field."""
+        """``info <key> <data>`` Add <data> to this cards info under
+        <key>."""
         if args:
             args = [arg.strip() for arg in args.split()]
             if len(args) > 1:
                 self.card.set_info(args[0], " ".join(args[1:]), True)
-            else:
-                self.do_info(self, None)
-        else:
-            print("Input info key.")
-            key = readinput("|>")
-            print("Input info value.")
-            value = readinput("|>")
-            self.card.set_info(key, value, True)
         self.header()
 
     def do_delete(self, args):
-        """Delete an index from a given field."""
+        """``delete <field> <key/index> <index>`` delete info from the card
+        under field and if required key and/then the index. Use the display
+        header to get index's."""
         if args:
             args = [arg.strip() for arg in args.split()]
             field = args[0]
             if field == "attribute" and len(args) >= 2:
-                del self.card.attributes[int(args[1])]
+                if len(self.card.attributes) <= int(args[1]):
+                    del self.card.attributes[int(args[1])]
                 return self.header()
             elif field == "attribute":
                 self.card.attributes = []
                 return self.header()
             elif field == "ability" and len(args) >= 3:
-                del self.card.abilities[args[1]][int(args[2])]
+                if args[1] in self.card.abilities and \
+                        len(self.card.attributes[args[1]]) >= int(args[2]):
+                    del self.card.abilities[args[1]][int(args[2])]
                 return self.header()
             elif field == "ability" and len(args) >= 2:
-                del self.card.abilities[args[1]]
+                if args[1] in self.card.abilities:
+                    del self.card.abilities[args[1]]
                 return self.header()
             elif field == "ability":
                 self.card.abilities = {}
                 return self.header()
             elif field == "info" and len(args) >= 3:
-                del self.card.info[args[1]][int(args[2])]
+                if args[1] in self.card.info and \
+                        len(self.card.info[args[1]]) >= int(args[2]):
+                    del self.card.info[args[1]][int(args[2])]
                 return self.header()
             elif field == "info" and len(args) >= 2:
-                del self.card.info[args[1]]
+                if args[1] in self.card.info:
+                    del self.card.info[args[1]]
                 return self.header()
             elif field == "info":
                 self.card.info = {}
                 return self.header()
-
-        print("Field")
-        field = readinput("|>")
-
-        if field == "attribute":
-            print("Index")
-            index = readinput("|>")
-            del self.card.attributes[int(index)]
-        elif field == "ability":
-            print("Key")
-            key = readinput("|>")
-            print("Index")
-            index = readinput("|>")
-            if index:
-                del self.card.abilities[key][int(index)]
-            else:
-                del self.card.abilities[key]
-        elif field == "info":
-            print("Key")
-            key = readinput("|>")
-            print("Index")
-            index = readinput("|>")
-            if index:
-                del self.card.info[key][int(index)]
-            else:
-                del self.card.info[key]
-        else:
-            print("Field not accepted. Must be; attribute, ability or info.")
         self.header()
 
     def header(self, args=None):
