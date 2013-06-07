@@ -125,13 +125,19 @@ class CLE(object):
             key = readinput("|>")
             print("Index")
             index = readinput("|>")
-            del self.card.ability[key][int(index)]
+            if index:
+                del self.card.ability[key][int(index)]
+            else:
+                del self.card.ability[key]
         elif field == "info":
             print("Key")
             key = readinput("|>")
             print("Index")
             index = readinput("|>")
-            del self.card.info[key][int(index)]
+            if index:
+                del self.card.info[key][int(index)]
+            else:
+                del self.card.info[key]
         else:
             print("Field not accepted. Must be; attribute, ability or info.")
 
