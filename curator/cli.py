@@ -4,8 +4,8 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 import os
 import sys
-from collections import OrderedDict
 from librarian.library import Library
+from .console import Console
 from .cle import CLE
 
 
@@ -25,31 +25,21 @@ def clear():
         os.system("cls")
 
 
-class CLI(object):
+class CLI(Console):
     """The command line inteface."""
     def __init__(self, dbname=None):
         """
         Takes a filename for the database and will create it and any required
         tables if the database filename doesnt exist.
         """
+        Console.__init__(self)
+        self.prompt = "[HOME]>"
         dbname = "library.lbr" if dbname is None else dbname
         self.library = Library(dbname)
         if not os.path.exists(dbname):
             self.library.create_db()
-        self.running = True
-        self.commands = OrderedDict([
-            ("quit", self.quit),
-            ("edit", self.edit),
-            ("delete", self.delete),
-            ("list", self.list),
-            ("help", self.help)
-        ])
 
-    def quit(self, *_):
-        """Save all changes and gracefully exit."""
-        self.running = False
-
-    def edit(self, *args):
+    def do_edit(self, args):
         """Edit a card. Can take a card code to edit."""
         code = int(args[0]) if args else 0
 
@@ -65,19 +55,21 @@ class CLI(object):
                         str(code))).fetchone()
                 loadstring = loadstring[0] if loadstring else None
 
-        card = CLE(code=code, loadstring=loadstring).top_level()
+        cle = CLE(code=code, loadstring=loadstring)
+        cle.cmdloop()
+        card = cle.card
 
         if card is None:
-            return self.header()
+            return clear()
 
         if card.code in codes:
             with self.library.connection() as libdb:
                 libdb.execute("DELETE from CARDS where code = {0}".format(
                     card.code))
         self.library.save_card(card)
-        self.header()
+        clear()
 
-    def delete(self, *args):
+    def do_delete(self, args):
         """Delete a card by code."""
         if args:
             code = int(args[0])
@@ -97,7 +89,7 @@ class CLI(object):
         else:
             print("No card could be found to delete")
 
-    def list(self, *args):
+    def do_list(self, args):
         """List all stored cards. Can search by a code prefix."""
         codes = []
         with self.library.connection() as libdb:
@@ -114,33 +106,3 @@ class CLI(object):
         for code in codes:
             card = self.library.load_card(code, False)
             print("{0}: {1}".format(card.code, card.name))
-
-    def help(self, *_):
-        """Display information on possible top level commands."""
-        for key, value in self.commands.items():
-            print("{0}: {1}".format(key, value.__doc__))
-
-    def header(self):
-        """Display a header of information."""
-        clear()
-        print(" " * 8, *self.commands.keys())
-
-    def top_level(self):
-        """
-        The top level of the command line interface. Simply interprets
-        commands until quit.
-        """
-        self.header()
-        while self.running:
-            string = readinput("|>")
-            parts = string.split(" ")
-            command = parts[0]
-            args = [] if len(parts) <= 1 else parts[1:]
-
-            self.header()
-            if command not in self.commands:
-                self.help()
-                continue
-            else:
-                self.commands[command](*args)
-        clear()

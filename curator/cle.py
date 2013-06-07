@@ -4,8 +4,8 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 import os
 import sys
-from collections import OrderedDict
 from librarian.card import Card
+from .console import Console
 
 
 def readinput(prefix):
@@ -24,147 +24,141 @@ def clear():
         os.system("cls")
 
 
-class CLE(object):
+class CLE(Console):
     """The command line editor for cards."""
     def __init__(self, code=None, loadstring=None):
         """
         Can take up to two arguments to define the code and name of the new
         card before starting the edit although it is optional.
         """
-        self.running = True
-        self.commands = OrderedDict([
-            ("code", self.code),
-            ("name", self.name),
-            ("attribute", self.attribute),
-            ("ability", self.ability),
-            ("info", self.info),
-            ("delete", self.delete),
-            ("commit", self.commit),
-            ("cancel", self.cancel),
-            ("help", self.help)
-        ])
+        Console.__init__(self)
         self.card = Card(code=code, loadstring=loadstring)
+        self.prompt = "[EDIT]>"
 
-    def commit(self, *_):
+    def do_commit(self, _):
         """Save all changes and exit."""
-        self.running = False
+        return -1
 
-    def cancel(self, *_):
+    def do_exit(self, _):
         """Exit without saving changes."""
         self.card = None
-        self.running = False
+        return -1
 
-    def help(self, *_):
-        """Display information on possible card editing commands."""
-        for key, value in self.commands.items():
-            print("{0}: {1}".format(key, value.__doc__))
-
-    def code(self, *args):
+    def do_code(self, args):
         """Input a new code for the current card."""
         if args:
+            args = [arg.strip() for arg in args.split()]
             self.card.code = int(args[0])
         else:
-            clear()
             print("Input new code.")
-            self.card.code = int(readinput("|>"))
+            self.card.code = int(readinput(self.prompt))
+        self.header()
 
-    def name(self, *args):
+    def do_name(self, args):
         """Input a new name for the current card."""
         if args:
+            args = [arg.strip() for arg in args.split()]
             self.card.name = " ".join(args)
         else:
-            clear()
             print("Input new name.")
-            self.card.name = readinput("|>")
+            self.card.name = readinput(self.prompt)
+        self.header()
 
-    def attribute(self, *args):
+    def do_attribute(self, args):
         """Add a new attribute."""
         if args:
+            args = [arg.strip() for arg in args.split()]
             self.card.add_attribute(" ".join(args))
         else:
-            clear()
             print("Input attribute.")
-            self.card.add_attribute(readinput("|>"))
+            self.card.add_attribute(readinput(self.prompt))
+        self.header()
 
-    def ability(self, *args):
+    def do_ability(self, args):
         """Add a new ability."""
-        if len(args) > 1:
-            self.card.add_ability(args[0], " ".join(args[1:]))
+        if args:
+            args = [arg.strip() for arg in args.split()]
+            if len(args) > 1:
+                self.card.add_ability(args[0], " ".join(args[1:]))
+            else:
+                self.do_ability(self, None)
         else:
-            clear()
             print("Input phase for ability.")
-            phase = readinput("|>")
+            phase = readinput(self.prompt)
             print("Input ability.")
-            ability = readinput("|>")
+            ability = readinput(self.prompt)
             self.card.add_ability(phase, ability)
+        self.header()
 
-    def info(self, *args):
+    def do_info(self, args):
         """Add a new info field."""
-        if len(args) > 1:
-            self.card.set_info(args[0], " ".join(args[1:]), True)
+        if args:
+            args = [arg.strip() for arg in args.split()]
+            if len(args) > 1:
+                self.card.set_info(args[0], " ".join(args[1:]), True)
+            else:
+                self.do_info(self, None)
         else:
-            clear()
             print("Input info key.")
-            key = readinput("|>")
+            key = readinput(self.prompt)
             print("Input info value.")
-            value = readinput("|>")
+            value = readinput(self.prompt)
             self.card.set_info(key, value, True)
+        self.header()
 
-    def delete(self, *args):
+    def do_delete(self, args):
         """Delete an index from a given field."""
         if args:
+            args = [arg.strip() for arg in args.split()]
             field = args[0]
             if field == "attribute" and len(args) >= 2:
                 del self.card.attributes[int(args[1])]
-                return None
+                return self.header()
             elif field == "ability" and len(args) >= 3:
                 del self.card.abilities[args[1]][int(args[2])]
-                return None
+                return self.header()
             elif field == "ability" and len(args) >= 2:
                 del self.card.abilities[args[1]]
-                return None
+                return self.header()
             elif field == "info" and len(args) >= 3:
                 del self.card.info[args[1]][int(args[2])]
-                return None
+                return self.header()
             elif field == "info" and len(args) >= 2:
                 del self.card.info[args[1]]
-                return None
+                return self.header()
 
-        self.header()
         print("Field")
-        field = readinput("|>")
+        field = readinput(self.prompt)
 
         if field == "attribute":
             print("Index")
-            index = readinput("|>")
+            index = readinput(self.prompt)
             del self.card.attributes[int(index)]
         elif field == "ability":
             print("Key")
-            key = readinput("|>")
+            key = readinput(self.prompt)
             print("Index")
-            index = readinput("|>")
+            index = readinput(self.prompt)
             if index:
                 del self.card.abilities[key][int(index)]
             else:
                 del self.card.abilities[key]
         elif field == "info":
             print("Key")
-            key = readinput("|>")
+            key = readinput(self.prompt)
             print("Index")
-            index = readinput("|>")
+            index = readinput(self.prompt)
             if index:
                 del self.card.info[key][int(index)]
             else:
                 del self.card.info[key]
         else:
             print("Field not accepted. Must be; attribute, ability or info.")
+        self.header()
 
-    def header(self):
-        """
-        Display a header of information.
-        """
+    def header(self, args=None):
+        """Display a header of card information."""
         clear()
-        print(" " * 8, *self.commands.keys())
         if self.card is None:
             return None
         print("{0}: {1}".format(self.card.code, self.card.name))
@@ -184,26 +178,8 @@ class CLE(object):
             print("{0}".format(key))
             for index, info in enumerate(value):
                 print("    >[{1}] {0}".format(info, index))
-        print("=============================================")
 
-    def top_level(self):
-        """
-        The command line editor for cards. Simply interprets
-        commands until quit at which time it returns the edited card.
-        """
+    def preloop(self):
+        """Display header at start."""
+        super(CLE, self).preloop()
         self.header()
-        while self.running:
-            string = readinput("|>")
-            parts = string.split(" ")
-            command = parts[0]
-            args = [] if len(parts) <= 1 else parts[1:]
-
-            self.header()
-            if command not in self.commands:
-                self.help()
-                continue
-            else:
-                self.commands[command](*args)
-                self.header()
-        clear()
-        return self.card

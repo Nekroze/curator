@@ -23,7 +23,7 @@ def driver():
         print('curator-cli v' + __version__)
         sys.exit(0)
 
-    CLI(args.libname).top_level()
+    CLI(args.libname).cmdloop()
 
 if __name__ == '__main__':
     driver()
