@@ -35,6 +35,9 @@ class CLE(object):
         self.commands = OrderedDict([
             ("code", self.code),
             ("name", self.name),
+            ("attribute", self.attribute),
+            ("ability", self.ability),
+            ("info", self.info),
             ("commit", self.commit),
             ("cancel", self.cancel),
             ("help", self.help)
@@ -82,6 +85,30 @@ class CLE(object):
             print("Input attribute.")
             self.card.add_attribute(readinput("|>"))
 
+    def ability(self, *args):
+        """Add a new ability."""
+        if len(args) > 1:
+            self.card.add_ability(args[0], " ".join(args[1:]))
+        else:
+            clear()
+            print("Input phase for ability.")
+            phase = readinput("|>")
+            print("Input ability.")
+            ability = readinput("|>")
+            self.card.add_ability(phase, ability)
+
+    def info(self, *args):
+        """Add a new info field."""
+        if len(args) > 1:
+            self.card.set_info(args[0], " ".join(args[1:]))
+        else:
+            clear()
+            print("Input info key.")
+            key = readinput("|>")
+            print("Input info value.")
+            value = readinput("|>")
+            self.card.set_info(phase, ability)
+
     def header(self):
         """
         Display a header of information.
@@ -101,7 +128,9 @@ class CLE(object):
                 print("    >{0}".format(ability))
         print(":::::Info")
         for key, value in self.card.info.items():
-            print("{0}: {1}".format(key, value))
+            print("<{0}>".format(key))
+            for info in value:
+                print("    >{0}".format(info))
 
     def top_level(self):
         """
