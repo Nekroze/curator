@@ -38,6 +38,7 @@ class CLI(object):
         self.running = True
         self.commands = {"quit": self.quit,
                          "edit": self.edit,
+                         "delete": self.delete,
                          "list": self.list,
                          "help": self.help}
 
@@ -71,6 +72,26 @@ class CLI(object):
                 libdb.execute("DELETE from CARDS where code = {0}".format(
                     card.code))
         self.library.save_card(card)
+
+    def delete(self, *args):
+        """Delete a card by code."""
+        if args and args[0]:
+            code = int(args[0][0])
+        else:
+            clear()
+            print("Input code to delete.")
+            code = int(readinput("|>"))
+
+        with self.library.connection() as libdb:
+            codes = libdb.execute("SELECT code FROM CARDS").fetchall()
+        codes = [fetched[0] for fetched in codes]
+
+        if code in codes:
+            with self.library.connection() as libdb:
+                libdb.execute("DELETE from CARDS where code = {0}".format(
+                    card.code))
+        else:
+            print("No card could be found to delete)"
 
     def list(self, *args):
         """List all stored cards. Can search by a code prefix."""
@@ -118,5 +139,5 @@ class CLI(object):
                 self.help()
                 continue
             else:
-                self.commands[command](args) 
+                self.commands[command](args)
         clear()
