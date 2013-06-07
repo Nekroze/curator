@@ -19,14 +19,15 @@ def clear():
 
 class CLE(Console):
     """The command line editor for cards."""
-    def __init__(self, code=None, loadstring=None):
+    def __init__(self, colormap, code=None, loadstring=None):
         """
         Can take up to two arguments to define the code and name of the new
         card before starting the edit although it is optional.
         """
         Console.__init__(self)
+        self.colormap = colormap
         self.card = Card(code=code, loadstring=loadstring)
-        self.prompt = "{0}[{1}EDIT{0}]>".format(Fore.GREEN, Fore.CYAN)
+        self.prompt = "{Csym}[{Ckey}EDIT{Csym}]>".format(**self.colormap)
 
     def do_commit(self, _):
         """
@@ -136,32 +137,28 @@ class CLE(Console):
         clear()
         if self.card is None:
             return None
-        print("{2}{0}{3}: {2}{1}".format(self.card.code, self.card.name,
-                                         Fore.YELLOW, Fore.GREEN))
+        card = self.card
+        print("{Cval}{0}{Csym}: {Cval}{1}".format(card.code, card.name,
+                                                  **self.colormap))
 
-        print("{0}:::::{1}Attributes".format(Fore.GREEN, Fore.CYAN))
-        for index, attribute in enumerate(self.card.attributes):
-            print("{3}[{2}{0}{3}]{2}{1}".format(str(index), attribute,
-                                                Fore.YELLOW, Fore.CYAN))
+        print("{Csym}:::::{Ckey}Attributes".format(**self.colormap))
+        for index, attr in enumerate(self.card.attributes):
+            print("{Csym}[{Ckey}{0}{Csym}]{Ckey}{1}".format(str(index), attr,
+                                                            **self.colormap))
 
-        print("{0}:::::{1}Abilities".format(Fore.GREEN, Fore.CYAN))
+        print("{Csym}:::::{Ckey}Abilities".format(**self.colormap))
         for phase, abilities in self.card.abilities.items():
-            print("{1}{0}{2}".format(phase, Fore.YELLOW, Fore.RESET))
+            print("{Cval}{0}".format(phase))
             for index, ability in enumerate(abilities):
-                print("{4}|_____{3}[{2}{0}{3}]{2}{1}".format(str(index),
-                                                             ability,
-                                                             Fore.YELLOW,
-                                                             Fore.CYAN,
-                                                             Fore.GREEN))
+                print("{Csym}|_____[{Ckey}{0}{Csym}]{Cval}{1}".format(
+                    str(index), ability, **self.colormap))
 
-        print("{0}:::::{1}Info".format(Fore.GREEN, Fore.CYAN))
+        print("{Csym}:::::{Ckey}Info".format(**self.colormap))
         for key, value in self.card.info.items():
-            print("{1}{0}".format(key, Fore.YELLOW))
+            print("{Cval}{0}".format(key, **self.colormap))
             for index, info in enumerate(value):
-                print("{4}|_____{3}[{2}{0}{3}]{2}{1}".format(str(index), info,
-                                                             Fore.YELLOW,
-                                                             Fore.CYAN,
-                                                             Fore.GREEN))
+                print("{Csym}|_____[{Ckey}{0}{Csym}]{Cval}{1}".format(
+                    str(index), info, **self.colormap))
 
     def preloop(self):
         """Display header at start."""

@@ -34,8 +34,11 @@ class CLI(Console):
         tables if the database filename doesnt exist.
         """
         Console.__init__(self)
-        self.prompt = "{0}[{1}HOME{0}]>".format(Fore.GREEN,
-                                                Fore.CYAN)
+        self.colormap = {}
+        self.colormap["Cval"] = Fore.YELLOW
+        self.colormap["Csym"] = Fore.GREEN
+        self.colormap["Ckey"] = Fore.CYAN
+        self.prompt = "{Csym}[{Ckey}HOME{Csym}]>".format(**self.colormap)
         dbname = "library.lbr" if dbname is None else dbname
         self.library = Library(dbname)
         if not os.path.exists(dbname):
@@ -57,7 +60,7 @@ class CLI(Console):
                         str(code))).fetchone()
                 loadstring = loadstring[0] if loadstring else None
 
-        cle = CLE(code=code, loadstring=loadstring)
+        cle = CLE(self.colormap, code=code, loadstring=loadstring)
         cle.cmdloop()
         card = cle.card
 
@@ -107,5 +110,5 @@ class CLI(Console):
 
         for code in codes:
             card = self.library.load_card(code, False)
-            print("{2}{0}{3}: {2}{1}".format(card.code, card.name,
-                                             Fore.YELLOW, Fore.GREEN))
+            print("{Cval}{0}{Csym}: {Cval}{1}".format(card.code, card.name,
+                                                      **self.colormap))
