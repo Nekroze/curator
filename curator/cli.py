@@ -42,16 +42,11 @@ class CLI(object):
                          "help": self.help}
 
     def quit(self, *_):
-        """
-        Save all changes and gracefully exit.
-        """
+        """Save all changes and gracefully exit."""
         self.running = False
 
     def edit(self, *args):
-        """
-        Edit a card. Will ask for a code and create a card if the code is
-        unused.
-        """
+        """Edit a card. Can take a card code to edit."""
         code = int(args[0][0]) if len(args) and args[0] else 0
 
         with self.library.connection() as libdb:
@@ -78,10 +73,7 @@ class CLI(object):
         self.library.save_card(card)
 
     def list(self, *args):
-        """
-        List all registered card codes and their names. A code prefix may be
-        entered to limit the selection.
-        """
+        """List all stored cards. Can search by a code prefix."""
         codes = []
         with self.library.connection() as libdb:
             if args and args[0]:
@@ -99,16 +91,12 @@ class CLI(object):
             print("{0}: {1}".format(card.code, card.name))
 
     def help(self, *_):
-        """
-        Display information on possible top level commands.
-        """
+        """Display information on possible top level commands."""
         for key, value in self.commands.items():
             print("{0}: {1}".format(key, value.__doc__))
 
     def header(self):
-        """
-        Display a header of information.
-        """
+        """Display a header of information."""
         print(" " * 8, *self.commands.keys())
 
     def top_level(self):
