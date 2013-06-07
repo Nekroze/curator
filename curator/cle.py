@@ -107,7 +107,7 @@ class CLE(object):
             key = readinput("|>")
             print("Input info value.")
             value = readinput("|>")
-            self.card.set_info(phase, ability)
+            self.card.set_info(key, value)
 
     def header(self):
         """
