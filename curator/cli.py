@@ -88,8 +88,7 @@ class CLI(object):
                     "SELECT code FROM CARDS WHERE code like ?",
                     (args[0][0] + '%',))
             else:
-                codes = libdb.execute("SELECT code FROM CARDS")
-        codes = codes.fetchall()
+                codes = libdb.execute("SELECT code FROM CARDS").fetchall()
 
         if not len(codes):
             print("No cards could be found")
