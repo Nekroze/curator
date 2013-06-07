@@ -52,22 +52,25 @@ class CLI(object):
         Edit a card. Will ask for a code and create a card if the code is
         unused.
         """
+        code = int(args[0][0]) if len(args) and args[0] else 0
+
+        with self.library.connection() as libdb:
+            codes = libdb.execute("SELECT code FROM CARDS").fetchall()
+        codes = [fetched[0] for fetched in codes]
+
         loadstring = None
-        if len(args) and args[0]:
-            print(args[0])
+        if code in codes:
             with self.library.connection() as libdb:
                 loadstring = libdb.execute(
-                    "SELECT card FROM CARDS WHERE code = {0}".format(args[0]))
-                loadstring = loadstring.fetchone()
+                    "SELECT card FROM CARDS WHERE code = {0}".format(
+                        args[0][0])).fetchone()[0]
 
         card = CLE(loadstring=loadstring).top_level()
+
         if card is None:
             return None
 
-        with self.library.connection() as libdb:
-            codes = libdb.execute("SELECT code FROM CARDS")
-
-        if card.code in codes.fetchall():
+        if card.code in codes:
             with self.library.connection() as libdb:
                 libdb.execute("DELETE from CARDS where code = {0}".format(
                     card.code))
