@@ -5,3 +5,4 @@ setup.py
 curator/__init__.py
 curator/cle.py
 curator/cli.py
+curator/console.py

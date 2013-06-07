@@ -155,7 +155,14 @@ setup(
     scripts=["curator-cli"],
     ext_modules = EXTENSIONS,
     classifiers=[
-        # DEFINE YOURSELF
+        "Development Status :: 4 - Beta",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Topic :: Games/Entertainment",
+        "Topic :: Utilities"
     ],
+    requires=["colorama", "librarian"],
     **kwds
 )
