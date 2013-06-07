@@ -171,13 +171,13 @@ class CLE(Console):
         for phase, abilities in self.card.abilities.items():
             print("{0}".format(phase))
             for index, ability in enumerate(abilities):
-                print("    >[{1}] {0}".format(ability, index))
+                print("    [{1}] {0}".format(ability, index))
 
         print(":::::Info")
         for key, value in self.card.info.items():
             print("{0}".format(key))
             for index, info in enumerate(value):
-                print("    >[{1}] {0}".format(info, index))
+                print("    [{1}] {0}".format(info, index))
 
     def preloop(self):
         """Display header at start."""
