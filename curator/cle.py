@@ -38,6 +38,7 @@ class CLE(object):
             ("attribute", self.attribute),
             ("ability", self.ability),
             ("info", self.info),
+            ("delete", self.delete),
             ("commit", self.commit),
             ("cancel", self.cancel),
             ("help", self.help)
@@ -109,6 +110,31 @@ class CLE(object):
             value = readinput("|>")
             self.card.set_info(key, value, True)
 
+    def delete(self, *_):
+        """Delete an index from a given field."""
+        self.header()
+        print("Field")
+        field = readinput("|>")
+
+        if field == "attribute":
+            print("Index")
+            index = readinput("|>")
+            del self.card.attribute[int(index)]
+        elif field == "ability":
+            print("Key")
+            key = readinput("|>")
+            print("Index")
+            index = readinput("|>")
+            del self.card.ability[key][int(index)]
+        elif field == "info":
+            print("Key")
+            key = readinput("|>")
+            print("Index")
+            index = readinput("|>")
+            del self.card.info[key][int(index)]
+        else:
+            print("Field not accepted. Must be; attribute, ability or info.")
+
     def header(self):
         """
         Display a header of information.
@@ -134,6 +160,7 @@ class CLE(object):
             print("{0}".format(key))
             for index, info in enumerate(value):
                 print("    >[{1}] {0}".format(info, index))
+        print("=============================================")
 
     def top_level(self):
         """
