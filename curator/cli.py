@@ -105,6 +105,12 @@ class CLI(object):
         for key, value in self.commands.items():
             print("{0}: {1}".format(key, value.__doc__))
 
+    def header(self):
+        """
+        Display a header of information.
+        """
+        print(*self.commands.keys())
+
     def top_level(self):
         """
         The top level of the command line interface. Simply interprets
@@ -112,6 +118,7 @@ class CLI(object):
         """
         clear()
         while self.running:
+            self.header()
             string = readinput("|>")
             parts = string.split(" ")
             command = parts[0]

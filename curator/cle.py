@@ -71,13 +71,20 @@ class CLE(object):
             print("Input new name.")
             self.card.name = readinput("|>")
 
+    def header(self):
+        """
+        Display a header of information.
+        """
+        print(*self.commands.keys())
+        print("{0}: {1}".format(self.card.code, self.card.name))
+
     def top_level(self):
         """
         The command line editor for cards. Simply interprets
         commands until quit at which time it returns the edited card.
         """
         while self.running:
-            print("{0}: {1}".format(self.card.code, self.card.name))
+            self.header()
             string = readinput("|>")
             parts = string.split(" ")
             command = parts[0]
