@@ -75,6 +75,7 @@ class CLI(object):
                 libdb.execute("DELETE from CARDS where code = {0}".format(
                     card.code))
         self.library.save_card(card)
+        self.header()
 
     def delete(self, *args):
         """Delete a card by code."""
