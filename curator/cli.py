@@ -65,7 +65,7 @@ class CLI(object):
                         str(code))).fetchone()
                 loadstring = loadstring[0] if loadstring else None
 
-        card = CLE(loadstring=loadstring).top_level()
+        card = CLE(code=code, loadstring=loadstring).top_level()
 
         if card is None:
             return None

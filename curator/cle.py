@@ -26,7 +26,7 @@ def clear():
 
 class CLE(object):
     """The command line editor for cards."""
-    def __init__(self, loadstring=None):
+    def __init__(self, code=None, loadstring=None):
         """
         Can take up to two arguments to define the code and name of the new
         card before starting the edit although it is optional.
@@ -39,7 +39,7 @@ class CLE(object):
             ("cancel", self.cancel),
             ("help", self.help)
         ])
-        self.card = Card(loadstring=loadstring)
+        self.card = Card(code=code, loadstring=loadstring)
 
     def commit(self, *_):
         """Save all changes and exit."""
