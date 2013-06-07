@@ -118,19 +118,22 @@ class CLE(object):
         if self.card is None:
             return None
         print("{0}: {1}".format(self.card.code, self.card.name))
+
         print(":::::Attributes")
-        for attribute in self.card.attributes:
-            print(attribute)
+        for index, attribute in enumerate(self.card.attributes):
+            print("[{0}]".format(str(index)), attribute)
+
         print(":::::Abilities")
         for phase, abilities in self.card.abilities.items():
-            print("<{0}>".format(phase))
-            for ability in abilities:
-                print("    >{0}".format(ability))
+            print("{0}".format(phase))
+            for index, ability in enumerate(abilities):
+                print("    >[{1}] {0}".format(ability, index))
+
         print(":::::Info")
         for key, value in self.card.info.items():
-            print("<{0}>".format(key))
-            for info in value:
-                print("    >{0}".format(info))
+            print("{0}".format(key))
+            for index, info in enumerate(value):
+                print("    >[{1}] {0}".format(info, index))
 
     def top_level(self):
         """
