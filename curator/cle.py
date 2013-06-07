@@ -31,11 +31,11 @@ class CLE(object):
         card before starting the edit although it is optional.
         """
         self.running = True
-        self.commands = {"commit": self.commit,
+        self.commands = {"code": self.code,
+                         "name": self.name,
+                         "commit": self.commit,
                          "cancel": self.cancel,
-                         "help": self.help,
-                         "code": self.code,
-                         "name": self.name
+                         "help": self.help
                          }
         self.card = Card(loadstring=loadstring)
 
@@ -94,17 +94,20 @@ class CLE(object):
         The command line editor for cards. Simply interprets
         commands until quit at which time it returns the edited card.
         """
+        clear()
+        self.header()
         while self.running:
-            self.header()
             string = readinput("|>")
             parts = string.split(" ")
             command = parts[0]
             args = [] if len(parts) <= 1 else parts[1:]
 
             clear()
+            self.header()
             if command not in self.commands:
                 self.help()
                 continue
             else:
                 self.commands[command](args)
+        clear()
         return self.card

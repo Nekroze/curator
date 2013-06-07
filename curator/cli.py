@@ -105,16 +105,18 @@ class CLI(object):
         commands until quit.
         """
         clear()
+        self.header()
         while self.running:
-            self.header()
             string = readinput("|>")
             parts = string.split(" ")
             command = parts[0]
             args = [] if len(parts) <= 1 else parts[1:]
 
             clear()
+            self.header()
             if command not in self.commands:
                 self.help()
                 continue
             else:
-                self.commands[command](args)
+                self.commands[command](args) 
+        clear()
