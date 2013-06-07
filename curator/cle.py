@@ -114,17 +114,26 @@ class CLE(Console):
             if field == "attribute" and len(args) >= 2:
                 del self.card.attributes[int(args[1])]
                 return self.header()
+            elif field == "attribute":
+                self.card.attributes = []
+                return self.header()
             elif field == "ability" and len(args) >= 3:
                 del self.card.abilities[args[1]][int(args[2])]
                 return self.header()
             elif field == "ability" and len(args) >= 2:
                 del self.card.abilities[args[1]]
                 return self.header()
+            elif field == "ability":
+                self.card.abilities = {}
+                return self.header()
             elif field == "info" and len(args) >= 3:
                 del self.card.info[args[1]][int(args[2])]
                 return self.header()
             elif field == "info" and len(args) >= 2:
                 del self.card.info[args[1]]
+                return self.header()
+            elif field == "info":
+                self.card.info = {}
                 return self.header()
 
         print("Field")
