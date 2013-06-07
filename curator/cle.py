@@ -38,38 +38,50 @@ class CLE(Console):
                                                    Fore.RED, Fore.RESET)
 
     def do_commit(self, _):
-        """Save all changes and exit."""
+        """
+        Save all changes and exit.
+        """
         return -1
 
     def do_exit(self, _):
-        """Exit without saving changes."""
+        """
+        Exit without saving changes.
+        """
         self.card = None
         return -1
 
     def do_code(self, args):
-        """``code <newcode>`` Set the card code to <newcode>."""
+        """
+        ``code <newcode>`` Set the card code to <newcode>.
+        """
         if args:
             args = [arg.strip() for arg in args.split()]
             self.card.code = int(args[0])
         self.header()
 
     def do_name(self, args):
-        """``name <newname>`` Set the card name to <newname>."""
+        """
+        ``name <newname>`` Set the card name to <newname>.
+        """
         if args:
             args = [arg.strip() for arg in args.split()]
             self.card.name = " ".join(args)
         self.header()
 
     def do_attribute(self, args):
-        """``attribute <attr>`` Add <attr> to this cards attributes."""
+        """
+        ``attribute <attr>`` Add <attr> to this cards attributes.
+        """
         if args:
             args = [arg.strip() for arg in args.split()]
             self.card.add_attribute(" ".join(args))
         self.header()
 
     def do_ability(self, args):
-        """``ability <phase> <abi>`` Add <abi> to this cards abilities under
-        <phase>."""
+        """
+        ``ability <phase> <abi>`` Add <abi> to this cards abilities under
+        <phase>.
+        """
         if args:
             args = [arg.strip() for arg in args.split()]
             if len(args) > 1:
@@ -79,8 +91,9 @@ class CLE(Console):
         self.header()
 
     def do_info(self, args):
-        """``info <key> <data>`` Add <data> to this cards info under
-        <key>."""
+        """
+        ``info <key> <data>`` Add <data> to this cards info under <key>.
+        """
         if args:
             args = [arg.strip() for arg in args.split()]
             if len(args) > 1:
@@ -88,9 +101,11 @@ class CLE(Console):
         self.header()
 
     def do_delete(self, args):
-        """``delete <field> <key/index> <index>`` delete info from the card
+        """
+        ``delete <field> <key/index> <index>`` delete info from the card
         under field and if required key and/then the index. Use the display
-        header to get index's."""
+        header to get index's.
+        """
         if args:
             args = [arg.strip() for arg in args.split()]
             field = args[0]
