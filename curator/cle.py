@@ -63,17 +63,19 @@ class CLE(object):
             clear()
             print("Input new code.")
             self.card.code = int(readinput("|>"))
-            self.header()
+        self.header()
 
     def name(self, *args):
         """Input a new name for the current card."""
-        if args and args[0]:
+        if args and len(args[0]) > 1:
+            self.card.name = " ".join(args[0])
+        elif args and args[0]:
             self.card.name = args[0][0]
         else:
             clear()
             print("Input new name.")
             self.card.name = readinput("|>")
-            self.header()
+        self.header()
 
     def header(self):
         """
