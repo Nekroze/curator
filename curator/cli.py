@@ -4,6 +4,7 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 import os
 import sys
+from collections import OrderedDict
 from librarian.library import Library
 from .cle import CLE
 
@@ -36,11 +37,13 @@ class CLI(object):
         if not os.path.exists(dbname):
             self.library.create_db()
         self.running = True
-        self.commands = {"quit": self.quit,
-                         "edit": self.edit,
-                         "delete": self.delete,
-                         "list": self.list,
-                         "help": self.help}
+        self.commands = OrderedDict([
+            ("quit", self.quit),
+            ("edit", self.edit),
+            ("delete", self.delete),
+            ("list", self.list),
+            ("help", self.help)
+        ])
 
     def quit(self, *_):
         """Save all changes and gracefully exit."""
@@ -89,9 +92,9 @@ class CLI(object):
         if code in codes:
             with self.library.connection() as libdb:
                 libdb.execute("DELETE from CARDS where code = {0}".format(
-                    card.code))
+                    code))
         else:
-            print("No card could be found to delete)"
+            print("No card could be found to delete")
 
     def list(self, *args):
         """List all stored cards. Can search by a code prefix."""

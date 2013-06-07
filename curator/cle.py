@@ -4,6 +4,7 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 import os
 import sys
+from collections import OrderedDict
 from librarian.card import Card
 
 
@@ -31,12 +32,13 @@ class CLE(object):
         card before starting the edit although it is optional.
         """
         self.running = True
-        self.commands = {"code": self.code,
-                         "name": self.name,
-                         "commit": self.commit,
-                         "cancel": self.cancel,
-                         "help": self.help
-                         }
+        self.commands = OrderedDict([
+            ("code", self.code),
+            ("name", self.name),
+            ("commit", self.commit),
+            ("cancel", self.cancel),
+            ("help", self.help)
+        ])
         self.card = Card(loadstring=loadstring)
 
     def commit(self, *_):
