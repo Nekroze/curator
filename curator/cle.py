@@ -63,6 +63,7 @@ class CLE(object):
             clear()
             print("Input new code.")
             self.card.code = int(readinput("|>"))
+            self.header()
 
     def name(self, *args):
         """Input a new name for the current card."""
@@ -72,11 +73,13 @@ class CLE(object):
             clear()
             print("Input new name.")
             self.card.name = readinput("|>")
+            self.header()
 
     def header(self):
         """
         Display a header of information.
         """
+        clear()
         print(" " * 8, *self.commands.keys())
         print("{0}: {1}".format(self.card.code, self.card.name))
         print(":::::Attributes")
@@ -96,7 +99,6 @@ class CLE(object):
         The command line editor for cards. Simply interprets
         commands until quit at which time it returns the edited card.
         """
-        clear()
         self.header()
         while self.running:
             string = readinput("|>")
@@ -104,7 +106,6 @@ class CLE(object):
             command = parts[0]
             args = [] if len(parts) <= 1 else parts[1:]
 
-            clear()
             self.header()
             if command not in self.commands:
                 self.help()
