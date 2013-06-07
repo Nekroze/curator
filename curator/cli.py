@@ -86,7 +86,7 @@ class CLI(object):
             if args and args[0]:
                 codes = libdb.execute(
                     "SELECT code FROM CARDS WHERE code like ?",
-                    (args[0][0] + '%',))
+                    (args[0][0] + '%',)).fetchall()
             else:
                 codes = libdb.execute("SELECT code FROM CARDS").fetchall()
 
