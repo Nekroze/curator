@@ -49,7 +49,7 @@ class CLE(object):
     def help(self, *_):
         """Display information on possible card editing commands."""
         for key, value in self.commands.items():
-            print("{0}: {1}".format((key, value.__doc__)))
+            print("{0}: {1}".format(key, value.__doc__))
 
     def top_level(self):
         """
@@ -57,6 +57,7 @@ class CLE(object):
         commands until quit at which time it returns the edited card.
         """
         while self.running:
+            print("{0}: {1}".format(self.card.code, self.card.name))
             string = readinput("|>")
             parts = string.split(" ")
             command = parts[0]

@@ -53,10 +53,12 @@ class CLI(object):
         unused.
         """
         loadstring = None
-        if len(args):
+        if len(args) and args[0]:
+            print(args[0])
             with self.library.connection() as libdb:
                 loadstring = libdb.execute(
-                    "SELECT card FROM CARDS WHERE code = ?", (args[0]))
+                    "SELECT card FROM CARDS WHERE code = {0}".format(args[0]))
+                loadstring = loadstring.fetchone()
 
         card = CLE(loadstring=loadstring).top_level()
         if card is None:
@@ -65,9 +67,10 @@ class CLI(object):
         with self.library.connection() as libdb:
             codes = libdb.execute("SELECT code FROM CARDS")
 
-        if card.code in codes:
+        if card.code in codes.fetchall():
             with self.library.connection() as libdb:
-                libdb.execute("DELETE from CARDS where code = ?", (card.code))
+                libdb.execute("DELETE from CARDS where code = {0}".format(
+                    card.code))
         self.library.save_card(card)
 
     def list(self, *args):
@@ -77,12 +80,13 @@ class CLI(object):
         """
         codes = []
         with self.library.connection() as libdb:
-            if args:
+            if args and args[0]:
                 codes = libdb.execute(
                     "SELECT code FROM CARDS WHERE code like ?",
-                    ("{0}%".format((args[0]))))
+                    (args[0][0] + '%',))
             else:
                 codes = libdb.execute("SELECT code FROM CARDS")
+        codes = codes.fetchall()
 
         if not len(codes):
             print("No cards could be found")
@@ -108,7 +112,7 @@ class CLI(object):
             string = readinput("|>")
             parts = string.split(" ")
             command = parts[0]
-            args = [] if len(parts) > 1 else parts[1:]
+            args = [] if len(parts) <= 1 else parts[1:]
 
             clear()
             if command not in self.commands:
