@@ -63,7 +63,6 @@ class CLE(object):
             clear()
             print("Input new code.")
             self.card.code = int(readinput("|>"))
-        self.header()
 
     def name(self, *args):
         """Input a new name for the current card."""
@@ -73,7 +72,6 @@ class CLE(object):
             clear()
             print("Input new name.")
             self.card.name = readinput("|>")
-        self.header()
 
     def attribute(self, *args):
         """Add a new attribute."""
@@ -83,7 +81,6 @@ class CLE(object):
             clear()
             print("Input attribute.")
             self.card.add_attribute(readinput("|>"))
-        self.header()
 
     def header(self):
         """
@@ -91,6 +88,8 @@ class CLE(object):
         """
         clear()
         print(" " * 8, *self.commands.keys())
+        if self.card is None:
+            return None
         print("{0}: {1}".format(self.card.code, self.card.name))
         print(":::::Attributes")
         for attribute in self.card.attributes:
@@ -122,5 +121,6 @@ class CLE(object):
                 continue
             else:
                 self.commands[command](*args)
+                self.header()
         clear()
         return self.card
