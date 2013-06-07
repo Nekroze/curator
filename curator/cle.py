@@ -67,10 +67,8 @@ class CLE(object):
 
     def name(self, *args):
         """Input a new name for the current card."""
-        if len(args) > 1:
+        if args:
             self.card.name = " ".join(args)
-        elif args:
-            self.card.name = args[0]
         else:
             clear()
             print("Input new name.")
@@ -79,10 +77,8 @@ class CLE(object):
 
     def attribute(self, *args):
         """Add a new attribute."""
-        if len(args) > 1:
+        if args:
             self.card.add_attribute(" ".join(args))
-        elif args:
-            self.card.add_attribute(args[0])
         else:
             clear()
             print("Input attribute.")
