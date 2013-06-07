@@ -33,7 +33,9 @@ class CLE(object):
         self.running = True
         self.commands = {"commit": self.commit,
                          "cancel": self.cancel,
-                         "help": self.help
+                         "help": self.help,
+                         "code": self.code,
+                         "name": self.name
                          }
         self.card = Card(loadstring=loadstring)
 
@@ -51,6 +53,24 @@ class CLE(object):
         for key, value in self.commands.items():
             print("{0}: {1}".format(key, value.__doc__))
 
+    def code(self, *args):
+        """Input a new code for the current card."""
+        if args and args[0]:
+            self.card.code = int(args[0][0])
+        else:
+            clear()
+            print("Input new code.")
+            self.card.code = int(readinput("|>"))
+
+    def name(self, *args):
+        """Input a new name for the current card."""
+        if args and args[0]:
+            self.card.name = args[0][0]
+        else:
+            clear()
+            print("Input new name.")
+            self.card.name = readinput("|>")
+
     def top_level(self):
         """
         The command line editor for cards. Simply interprets
@@ -61,7 +81,7 @@ class CLE(object):
             string = readinput("|>")
             parts = string.split(" ")
             command = parts[0]
-            args = [] if len(parts) > 1 else parts[1:]
+            args = [] if len(parts) <= 1 else parts[1:]
 
             clear()
             if command not in self.commands:
