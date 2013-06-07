@@ -86,8 +86,6 @@ class CLE(Console):
             args = [arg.strip() for arg in args.split()]
             if len(args) > 1:
                 self.card.add_ability(args[0], " ".join(args[1:]))
-            else:
-                self.do_ability(self, None)
         self.header()
 
     def do_info(self, args):
@@ -142,7 +140,7 @@ class CLE(Console):
                 return self.header()
         self.header()
 
-    def header(self, args=None):
+    def header(self):
         """Display a header of card information."""
         clear()
         if self.card is None:

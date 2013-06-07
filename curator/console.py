@@ -1,4 +1,7 @@
-import os
+"""Console super class for a Command Line Interface."""
+from __future__ import print_function
+__author__ = 'Taylor "Nekroze" Lawson'
+__email__ = 'nekroze@eturnilnetwork.com'
 import cmd
 try:
     import readline
@@ -7,7 +10,8 @@ except ImportError:
 
 
 class Console(object, cmd.Cmd):
-    def __init__(self, dbname=None):
+    """Console is a CLI component based on the cmd module."""
+    def __init__(self):
         """
         Takes a filename for the database and will create it and any required
         tables if the database filename doesnt exist.
@@ -17,11 +21,11 @@ class Console(object, cmd.Cmd):
         if readline is None:
             self.completekey = None
 
-    def do_hist(self, args):
+    def do_hist(self, _):
         """Print a list of commands that have been entered"""
-        print self._hist
+        print(self._hist)
 
-    def do_exit(self, args):
+    def do_exit(self, _):
         """Exits from the console"""
         return -1
 
@@ -50,7 +54,7 @@ class Console(object, cmd.Cmd):
         """
         Called after a line has been input but before it has been interpreted.
         """
-        self._hist += [ line.strip() ]
+        self._hist += [line.strip()]
         return line
 
     def postcmd(self, stop, line):
