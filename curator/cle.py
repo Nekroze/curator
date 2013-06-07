@@ -4,6 +4,7 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 import os
 import sys
+from colorama import Fore
 from librarian.card import Card
 from .console import Console
 
@@ -33,7 +34,8 @@ class CLE(Console):
         """
         Console.__init__(self)
         self.card = Card(code=code, loadstring=loadstring)
-        self.prompt = "[EDIT]>"
+        self.prompt = "{0}[{1}EDIT{0}]>{2}".format(Fore.GREEN,
+                                                   Fore.RED, Fore.RESET)
 
     def do_commit(self, _):
         """Save all changes and exit."""
@@ -170,23 +172,36 @@ class CLE(Console):
         clear()
         if self.card is None:
             return None
-        print("{0}: {1}".format(self.card.code, self.card.name))
+        print("{2}{0}{3}: {2}{1}{3}".format(self.card.code, self.card.name,
+                                            Fore.BLUE, Fore.RED, Fore.RESET))
 
-        print(":::::Attributes")
+        print("{0}:::::{1}Attributes{2}".format(Fore.GREEN, Fore.RED,
+                                                Fore.RESET))
         for index, attribute in enumerate(self.card.attributes):
-            print("[{0}]".format(str(index)), attribute)
+            print("{3}[{2}{0}{3}]{2}{1}{3}".format(str(index), attribute,
+                                                   Fore.BLUE, Fore.RED,
+                                                   Fore.RESET))
 
-        print(":::::Abilities")
+        print("{0}:::::{1}Abilities{2}".format(Fore.GREEN, Fore.RED,
+                                               Fore.RESET))
         for phase, abilities in self.card.abilities.items():
-            print("{0}".format(phase))
+            print("{1}{0}{2}".format(phase, Fore.BLUE, Fore.RESET))
             for index, ability in enumerate(abilities):
-                print("    [{1}] {0}".format(ability, index))
+                print("|_____{3}[{2}{0}{3}]{2}{1}{3}".format(str(index),
+                                                             ability,
+                                                             Fore.BLUE,
+                                                             Fore.RED,
+                                                             Fore.RESET))
 
-        print(":::::Info")
+        print("{0}:::::{1}Info{2}".format(Fore.GREEN, Fore.RED,
+                                          Fore.RESET))
         for key, value in self.card.info.items():
-            print("{0}".format(key))
+            print("{1}{0}{2}".format(key, Fore.BLUE, Fore.RESET))
             for index, info in enumerate(value):
-                print("    [{1}] {0}".format(info, index))
+                print("|_____{3}[{2}{0}{3}]{2}{1}{3}".format(str(index), info,
+                                                             Fore.BLUE,
+                                                             Fore.RED,
+                                                             Fore.RESET))
 
     def preloop(self):
         """Display header at start."""

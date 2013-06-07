@@ -4,6 +4,7 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 import os
 import sys
+from colorama import Fore
 from librarian.library import Library
 from .console import Console
 from .cle import CLE
@@ -33,7 +34,8 @@ class CLI(Console):
         tables if the database filename doesnt exist.
         """
         Console.__init__(self)
-        self.prompt = "[HOME]>"
+        self.prompt = "{0}[{1}HOME{0}]>{2}".format(Fore.GREEN,
+                                                   Fore.RED, Fore.RESET)
         dbname = "library.lbr" if dbname is None else dbname
         self.library = Library(dbname)
         if not os.path.exists(dbname):
