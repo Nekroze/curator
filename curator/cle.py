@@ -110,8 +110,26 @@ class CLE(object):
             value = readinput("|>")
             self.card.set_info(key, value, True)
 
-    def delete(self, *_):
+    def delete(self, *args):
         """Delete an index from a given field."""
+        if args:
+            field = args[0]
+            if field == "attribute" and len(args) >= 2:
+                del self.card.attributes[int(args[1])]
+                return None
+            elif field == "ability" and len(args) >= 3:
+                del self.card.abilities[args[1]][int(args[2])]
+                return None
+            elif field == "ability" and len(args) >= 2:
+                del self.card.abilities[args[1]]
+                return None
+            elif field == "info" and len(args) >= 3:
+                del self.card.info[args[1]][int(args[2])]
+                return None
+            elif field == "info" and len(args) >= 2:
+                del self.card.info[args[1]]
+                return None
+
         self.header()
         print("Field")
         field = readinput("|>")
@@ -119,16 +137,16 @@ class CLE(object):
         if field == "attribute":
             print("Index")
             index = readinput("|>")
-            del self.card.attribute[int(index)]
+            del self.card.attributes[int(index)]
         elif field == "ability":
             print("Key")
             key = readinput("|>")
             print("Index")
             index = readinput("|>")
             if index:
-                del self.card.ability[key][int(index)]
+                del self.card.abilities[key][int(index)]
             else:
-                del self.card.ability[key]
+                del self.card.abilities[key]
         elif field == "info":
             print("Key")
             key = readinput("|>")
