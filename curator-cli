@@ -13,10 +13,10 @@ def driver():
     """Drive the usage of curator-cli."""
     parser = argparse.ArgumentParser(description =
                                      "library access from the command line.")
-    parser.add_argument("--libname", help="Path to the librarian library file",
-                        type=str, default = None)
     parser.add_argument("-v", "--version", help="Display curator-cli version",
                         action="store_true", default = False)
+    parser.add_argument("--libname", help="Path to the librarian library file",
+                        type=str, default = None)
     args = parser.parse_args()
 
     if args.version:
