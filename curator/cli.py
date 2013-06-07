@@ -34,8 +34,8 @@ class CLI(Console):
         tables if the database filename doesnt exist.
         """
         Console.__init__(self)
-        self.prompt = "{0}[{1}HOME{0}]>{2}".format(Fore.GREEN,
-                                                   Fore.CYAN, Fore.RESET)
+        self.prompt = "{0}[{1}HOME{0}]>".format(Fore.GREEN,
+                                                Fore.CYAN)
         dbname = "library.lbr" if dbname is None else dbname
         self.library = Library(dbname)
         if not os.path.exists(dbname):
@@ -107,6 +107,5 @@ class CLI(Console):
 
         for code in codes:
             card = self.library.load_card(code, False)
-            print("{2}{0}{3}: {2}{1}{4}".format(card.code, card.name,
-                                                Fore.YELLOW, Fore.GREEN,
-                                                Fore.RESET))
+            print("{2}{0}{3}: {2}{1}".format(card.code, card.name,
+                                             Fore.YELLOW, Fore.GREEN))

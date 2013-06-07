@@ -9,14 +9,6 @@ from librarian.card import Card
 from .console import Console
 
 
-def readinput(prefix):
-    """Python version independent input reading."""
-    if sys.version_info > (3, 0):
-        return input(prefix)
-    else:
-        return raw_input(prefix)
-
-
 def clear():
     """Platform independent clear console screen."""
     if "windows" not in sys.platform.lower():
@@ -34,8 +26,7 @@ class CLE(Console):
         """
         Console.__init__(self)
         self.card = Card(code=code, loadstring=loadstring)
-        self.prompt = "{0}[{1}EDIT{0}]>{2}".format(Fore.GREEN,
-                                                   Fore.CYAN, Fore.RESET)
+        self.prompt = "{0}[{1}EDIT{0}]>".format(Fore.GREEN, Fore.CYAN)
 
     def do_commit(self, _):
         """
@@ -145,39 +136,32 @@ class CLE(Console):
         clear()
         if self.card is None:
             return None
-        print("{2}{0}{3}: {2}{1}{4}".format(self.card.code, self.card.name,
-                                            Fore.YELLOW, Fore.GREEN, 
-											Fore.RESET))
+        print("{2}{0}{3}: {2}{1}".format(self.card.code, self.card.name,
+                                         Fore.YELLOW, Fore.GREEN))
 
-        print("{0}:::::{1}Attributes{2}".format(Fore.GREEN, Fore.CYAN,
-                                                Fore.RESET))
+        print("{0}:::::{1}Attributes".format(Fore.GREEN, Fore.CYAN))
         for index, attribute in enumerate(self.card.attributes):
-            print("{3}[{2}{0}{3}]{2}{1}{4}".format(str(index), attribute,
-                                                   Fore.YELLOW, Fore.CYAN,
-                                                   Fore.RESET))
+            print("{3}[{2}{0}{3}]{2}{1}".format(str(index), attribute,
+                                                Fore.YELLOW, Fore.CYAN))
 
-        print("{0}:::::{1}Abilities{2}".format(Fore.GREEN, Fore.CYAN,
-                                               Fore.RESET))
+        print("{0}:::::{1}Abilities".format(Fore.GREEN, Fore.CYAN))
         for phase, abilities in self.card.abilities.items():
             print("{1}{0}{2}".format(phase, Fore.YELLOW, Fore.RESET))
             for index, ability in enumerate(abilities):
-                print("{4}|_____{3}[{2}{0}{3}]{2}{1}{5}".format(str(index),
+                print("{4}|_____{3}[{2}{0}{3}]{2}{1}".format(str(index),
                                                              ability,
                                                              Fore.YELLOW,
                                                              Fore.CYAN,
-															 Fore.GREEN,
-                                                             Fore.RESET))
+                                                             Fore.GREEN))
 
-        print("{0}:::::{1}Info{2}".format(Fore.GREEN, Fore.CYAN,
-                                          Fore.RESET))
+        print("{0}:::::{1}Info".format(Fore.GREEN, Fore.CYAN))
         for key, value in self.card.info.items():
-            print("{1}{0}{2}".format(key, Fore.YELLOW, Fore.RESET))
+            print("{1}{0}".format(key, Fore.YELLOW))
             for index, info in enumerate(value):
-                print("{4}|_____{3}[{2}{0}{3}]{2}{1}{5}".format(str(index), info,
+                print("{4}|_____{3}[{2}{0}{3}]{2}{1}".format(str(index), info,
                                                              Fore.YELLOW,
                                                              Fore.CYAN,
-															 Fore.GREEN,
-                                                             Fore.RESET))
+                                                             Fore.GREEN))
 
     def preloop(self):
         """Display header at start."""

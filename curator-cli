@@ -4,6 +4,7 @@ __version__ = "0.1.0"
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 from curator.cli import CLI
+import colorama
 import argparse
 import sys
 import os
@@ -23,6 +24,7 @@ def driver():
         print('curator-cli v' + __version__)
         sys.exit(0)
 
+    colorama.init(autoreset=True)
     CLI(args.libname).cmdloop()
 
 if __name__ == '__main__':
