@@ -68,7 +68,7 @@ class CLI(object):
         card = CLE(code=code, loadstring=loadstring).top_level()
 
         if card is None:
-            return None
+            return self.header()
 
         if card.code in codes:
             with self.library.connection() as libdb:
