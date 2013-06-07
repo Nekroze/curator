@@ -57,8 +57,8 @@ class CLE(object):
 
     def code(self, *args):
         """Input a new code for the current card."""
-        if args and args[0]:
-            self.card.code = int(args[0][0])
+        if args:
+            self.card.code = int(args[0])
         else:
             clear()
             print("Input new code.")
@@ -67,10 +67,10 @@ class CLE(object):
 
     def name(self, *args):
         """Input a new name for the current card."""
-        if args and len(args[0]) > 1:
-            self.card.name = " ".join(args[0])
-        elif args and args[0]:
-            self.card.name = args[0][0]
+        if len(args) > 1:
+            self.card.name = " ".join(args)
+        elif args:
+            self.card.name = args[0]
         else:
             clear()
             print("Input new name.")
@@ -113,6 +113,6 @@ class CLE(object):
                 self.help()
                 continue
             else:
-                self.commands[command](args)
+                self.commands[command](*args)
         clear()
         return self.card

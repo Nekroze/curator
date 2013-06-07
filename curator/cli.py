@@ -51,7 +51,7 @@ class CLI(object):
 
     def edit(self, *args):
         """Edit a card. Can take a card code to edit."""
-        code = int(args[0][0]) if len(args) and args[0] else 0
+        code = int(args[0]) if args else 0
 
         with self.library.connection() as libdb:
             codes = libdb.execute("SELECT code FROM CARDS").fetchall()
@@ -79,8 +79,8 @@ class CLI(object):
 
     def delete(self, *args):
         """Delete a card by code."""
-        if args and args[0]:
-            code = int(args[0][0])
+        if args:
+            code = int(args[0])
         else:
             clear()
             print("Input code to delete.")
@@ -101,10 +101,10 @@ class CLI(object):
         """List all stored cards. Can search by a code prefix."""
         codes = []
         with self.library.connection() as libdb:
-            if args and args[0]:
+            if args:
                 codes = libdb.execute(
                     "SELECT code FROM CARDS WHERE code like ?",
-                    (args[0][0] + '%',)).fetchall()
+                    (args[0] + '%',)).fetchall()
             else:
                 codes = libdb.execute("SELECT code FROM CARDS").fetchall()
 
@@ -122,6 +122,7 @@ class CLI(object):
 
     def header(self):
         """Display a header of information."""
+        clear()
         print(" " * 8, *self.commands.keys())
 
     def top_level(self):
@@ -129,7 +130,6 @@ class CLI(object):
         The top level of the command line interface. Simply interprets
         commands until quit.
         """
-        clear()
         self.header()
         while self.running:
             string = readinput("|>")
@@ -137,11 +137,10 @@ class CLI(object):
             command = parts[0]
             args = [] if len(parts) <= 1 else parts[1:]
 
-            clear()
             self.header()
             if command not in self.commands:
                 self.help()
                 continue
             else:
-                self.commands[command](args)
+                self.commands[command](*args)
         clear()
