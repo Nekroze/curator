@@ -35,7 +35,7 @@ class CLI(Console):
         """
         Console.__init__(self)
         self.prompt = "{0}[{1}HOME{0}]>{2}".format(Fore.GREEN,
-                                                   Fore.RED, Fore.RESET)
+                                                   Fore.CYAN, Fore.RESET)
         dbname = "library.lbr" if dbname is None else dbname
         self.library = Library(dbname)
         if not os.path.exists(dbname):
@@ -107,6 +107,6 @@ class CLI(Console):
 
         for code in codes:
             card = self.library.load_card(code, False)
-            print("{2}{0}{3}: {2}{1}{3}".format(card.code, card.name,
-                                                Fore.BLUE, Fore.RED,
+            print("{2}{0}{3}: {2}{1}{4}".format(card.code, card.name,
+                                                Fore.YELLOW, Fore.GREEN,
                                                 Fore.RESET))

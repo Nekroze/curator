@@ -35,7 +35,7 @@ class CLE(Console):
         Console.__init__(self)
         self.card = Card(code=code, loadstring=loadstring)
         self.prompt = "{0}[{1}EDIT{0}]>{2}".format(Fore.GREEN,
-                                                   Fore.RED, Fore.RESET)
+                                                   Fore.CYAN, Fore.RESET)
 
     def do_commit(self, _):
         """
@@ -145,35 +145,38 @@ class CLE(Console):
         clear()
         if self.card is None:
             return None
-        print("{2}{0}{3}: {2}{1}{3}".format(self.card.code, self.card.name,
-                                            Fore.BLUE, Fore.RED, Fore.RESET))
+        print("{2}{0}{3}: {2}{1}{4}".format(self.card.code, self.card.name,
+                                            Fore.YELLOW, Fore.GREEN, 
+											Fore.RESET))
 
-        print("{0}:::::{1}Attributes{2}".format(Fore.GREEN, Fore.RED,
+        print("{0}:::::{1}Attributes{2}".format(Fore.GREEN, Fore.CYAN,
                                                 Fore.RESET))
         for index, attribute in enumerate(self.card.attributes):
-            print("{3}[{2}{0}{3}]{2}{1}{3}".format(str(index), attribute,
-                                                   Fore.BLUE, Fore.RED,
+            print("{3}[{2}{0}{3}]{2}{1}{4}".format(str(index), attribute,
+                                                   Fore.YELLOW, Fore.CYAN,
                                                    Fore.RESET))
 
-        print("{0}:::::{1}Abilities{2}".format(Fore.GREEN, Fore.RED,
+        print("{0}:::::{1}Abilities{2}".format(Fore.GREEN, Fore.CYAN,
                                                Fore.RESET))
         for phase, abilities in self.card.abilities.items():
-            print("{1}{0}{2}".format(phase, Fore.BLUE, Fore.RESET))
+            print("{1}{0}{2}".format(phase, Fore.YELLOW, Fore.RESET))
             for index, ability in enumerate(abilities):
-                print("|_____{3}[{2}{0}{3}]{2}{1}{3}".format(str(index),
+                print("{4}|_____{3}[{2}{0}{3}]{2}{1}{5}".format(str(index),
                                                              ability,
-                                                             Fore.BLUE,
-                                                             Fore.RED,
+                                                             Fore.YELLOW,
+                                                             Fore.CYAN,
+															 Fore.GREEN,
                                                              Fore.RESET))
 
-        print("{0}:::::{1}Info{2}".format(Fore.GREEN, Fore.RED,
+        print("{0}:::::{1}Info{2}".format(Fore.GREEN, Fore.CYAN,
                                           Fore.RESET))
         for key, value in self.card.info.items():
-            print("{1}{0}{2}".format(key, Fore.BLUE, Fore.RESET))
+            print("{1}{0}{2}".format(key, Fore.YELLOW, Fore.RESET))
             for index, info in enumerate(value):
-                print("|_____{3}[{2}{0}{3}]{2}{1}{3}".format(str(index), info,
-                                                             Fore.BLUE,
-                                                             Fore.RED,
+                print("{4}|_____{3}[{2}{0}{3}]{2}{1}{5}".format(str(index), info,
+                                                             Fore.YELLOW,
+                                                             Fore.CYAN,
+															 Fore.GREEN,
                                                              Fore.RESET))
 
     def preloop(self):
