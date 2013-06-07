@@ -63,7 +63,8 @@ class CLI(object):
             with self.library.connection() as libdb:
                 loadstring = libdb.execute(
                     "SELECT card FROM CARDS WHERE code = {0}".format(
-                        args[0][0])).fetchone()[0]
+                        args[0][0])).fetchone()
+                loadstring = loadstring[0] if loadstring else None
 
         card = CLE(loadstring=loadstring).top_level()
 
