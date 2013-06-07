@@ -77,6 +77,18 @@ class CLE(object):
             self.card.name = readinput("|>")
         self.header()
 
+    def attribute(self, *args):
+        """Add a new attribute."""
+        if len(args) > 1:
+            self.card.add_attribute(" ".join(args))
+        elif args:
+            self.card.add_attribute(args[0])
+        else:
+            clear()
+            print("Input attribute.")
+            self.card.add_attribute(readinput("|>"))
+        self.header()
+
     def header(self):
         """
         Display a header of information.
