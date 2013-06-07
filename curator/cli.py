@@ -63,7 +63,7 @@ class CLI(object):
             with self.library.connection() as libdb:
                 loadstring = libdb.execute(
                     "SELECT card FROM CARDS WHERE code = {0}".format(
-                        args[0][0])).fetchone()
+                        str(code))).fetchone()
                 loadstring = loadstring[0] if loadstring else None
 
         card = CLE(loadstring=loadstring).top_level()
@@ -109,7 +109,7 @@ class CLI(object):
         """
         Display a header of information.
         """
-        print(*self.commands.keys())
+        print(" " * 8, *self.commands.keys())
 
     def top_level(self):
         """

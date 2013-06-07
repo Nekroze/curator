@@ -75,8 +75,19 @@ class CLE(object):
         """
         Display a header of information.
         """
-        print(*self.commands.keys())
+        print(" " * 8, *self.commands.keys())
         print("{0}: {1}".format(self.card.code, self.card.name))
+        print(":::::Attributes")
+        for attribute in self.card.attributes:
+            print(attribute)
+        print(":::::Abilities")
+        for phase, abilities in self.card.abilities.items():
+            print("<{0}>".format(phase))
+            for ability in abilities:
+                print("    >{0}".format(ability))
+        print(":::::Info")
+        for key, value in self.card.info.items():
+            print("{0}: {1}".format(key, value))
 
     def top_level(self):
         """
