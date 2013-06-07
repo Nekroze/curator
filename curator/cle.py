@@ -100,14 +100,14 @@ class CLE(object):
     def info(self, *args):
         """Add a new info field."""
         if len(args) > 1:
-            self.card.set_info(args[0], " ".join(args[1:]))
+            self.card.set_info(args[0], " ".join(args[1:]), True)
         else:
             clear()
             print("Input info key.")
             key = readinput("|>")
             print("Input info value.")
             value = readinput("|>")
-            self.card.set_info(key, value)
+            self.card.set_info(key, value, True)
 
     def header(self):
         """
