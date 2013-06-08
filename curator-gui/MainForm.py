@@ -1,10 +1,13 @@
-﻿import System.Drawing
+﻿__author__ = 'Taylor "Nekroze" Lawson'
+__email__ = 'nekroze@eturnilnetwork.com'
+import System.Drawing
 import System.Windows.Forms
 
 from System.Drawing import *
 from System.Windows.Forms import *
 
 from librarian.library import Library
+from librarian.card import Card
 import os
 
 
@@ -18,12 +21,12 @@ class MainForm(Form):
 		self.library = Library(self.dbname)
 		if not os.path.exists(self.dbname):
 			self.library.create_db()
+		self.card = None
 		self.UpdateCodeList()
 	
 	def InitializeComponent(self):
 		self._splitContainer1 = System.Windows.Forms.SplitContainer()
 		self._SearchText = System.Windows.Forms.TextBox()
-		self._LoadButton = System.Windows.Forms.Button()
 		self._ButtonSave = System.Windows.Forms.Button()
 		self._TextName = System.Windows.Forms.TextBox()
 		self._TextCode = System.Windows.Forms.TextBox()
@@ -57,7 +60,6 @@ class MainForm(Form):
 		# 
 		self._splitContainer1.Panel1.Controls.Add(self._CodeList)
 		self._splitContainer1.Panel1.Controls.Add(self._CreateButton)
-		self._splitContainer1.Panel1.Controls.Add(self._LoadButton)
 		self._splitContainer1.Panel1.Controls.Add(self._SearchText)
 		# 
 		# splitContainer1.Panel2
@@ -86,15 +88,6 @@ class MainForm(Form):
 		self._SearchText.Size = System.Drawing.Size(153, 20)
 		self._SearchText.TabIndex = 0
 		self._SearchText.TextChanged += self.SearchTextTextChanged
-		# 
-		# LoadButton
-		# 
-		self._LoadButton.Location = System.Drawing.Point(3, 464)
-		self._LoadButton.Name = "LoadButton"
-		self._LoadButton.Size = System.Drawing.Size(206, 23)
-		self._LoadButton.TabIndex = 2
-		self._LoadButton.Text = "Load"
-		self._LoadButton.UseVisualStyleBackColor = True
 		# 
 		# ButtonSave
 		# 
@@ -215,10 +208,11 @@ class MainForm(Form):
 			self._Names]))
 		self._CodeList.Location = System.Drawing.Point(3, 29)
 		self._CodeList.Name = "CodeList"
-		self._CodeList.Size = System.Drawing.Size(206, 429)
+		self._CodeList.Size = System.Drawing.Size(206, 458)
 		self._CodeList.TabIndex = 4
 		self._CodeList.UseCompatibleStateImageBehavior = False
 		self._CodeList.View = System.Windows.Forms.View.Details
+		self._CodeList.SelectedIndexChanged += self.CodeListSelectedIndexChanged
 		# 
 		# Codes
 		# 
@@ -263,6 +257,28 @@ class MainForm(Form):
 			self._CodeList.Items.Add(str(card.code))
 			self._CodeList.Items[pos].SubItems.Add(card.name)
 		self._CodeList.EndUpdate()
+		
+	def LoadCard(self, code):
+		"""Load a card."""
+		with self.library.connection() as libdb:
+			codes = libdb.execute("SELECT code FROM CARDS").fetchall()
+		codes = [fetched[0] for fetched in codes]
+		
+		loadstring = None
+		if code in codes:
+			with self.library.connection() as libdb:
+			    loadstring = libdb.execute(
+			        "SELECT card FROM CARDS WHERE code = {0}".format(
+			    		str(code))).fetchone()
+			    loadstring = loadstring[0] if loadstring else None
+		self.card = Card(code=code, loadstring=loadstring)
+		self._TextCode.Text = str(self.card.code)
+		self._TextName.Text = self.card.name
 
 	def SearchTextTextChanged(self, sender, e):
 		self.UpdateCodeList()
+
+	def CodeListSelectedIndexChanged(self, sender, e):
+		if self._CodeList.SelectedItems:
+			code = eval(self._CodeList.SelectedItems[0].Text)
+			self.LoadCard(code)
