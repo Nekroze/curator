@@ -1,0 +1,7 @@
+G:\cygwin\home\Nekroze\git\curator\curator-gui\obj\Debug\curator-gui.pyprojResolveAssemblyReference.cache
+G:\cygwin\home\Nekroze\git\curator\curator-gui\obj\Debug\curator_gui.MainForm.resources
+G:\cygwin\home\Nekroze\git\curator\curator-gui\obj\Debug\curator-gui.pyproj.GenerateResource.Cache
+G:\cygwin\home\Nekroze\git\curator\curator-gui\bin\Debug\curator-gui.exe.config
+G:\cygwin\home\Nekroze\git\curator\curator-gui\bin\Debug\curator-gui.exe
+G:\cygwin\home\Nekroze\git\curator\curator-gui\bin\Debug\curator-gui.dll
+G:\cygwin\home\Nekroze\git\curator\curator-gui\obj\Debug\curator-gui.exe
