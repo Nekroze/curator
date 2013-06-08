@@ -275,9 +275,18 @@ class MainForm(Form):
 		self.card = Card(code=code, loadstring=loadstring)
 		self._TextCode.Text = str(self.card.code)
 		self._TextName.Text = self.card.name
+		self._TextAttributes.Text = '\n'.join(self.card.attributes)
+		self._ComboAbilities.Items.Clear()
+		for key in self.card.abilities.keys():
+			self._ComboAbilities.Items.Add(key)
+		self._ComboInfo.Items.Clear()
+		for key in self.card.info.keys():
+			self._ComboInfo.Items.Add(key)
 		
 	def SaveCard(self):
-		self.card = Card(int(self._TextCode.Text), self._TextName.Text)
+		self.CommitCode()
+		self.CommitName()
+		self.CommitAttributes()
 		with self.library.connection() as libdb:
 			codes = libdb.execute("SELECT code FROM CARDS").fetchall()
 		codes = [fetched[0] for fetched in codes]
@@ -288,6 +297,43 @@ class MainForm(Form):
 					self.card.code))
 		self.library.save_card(self.card)
 		self.UpdateCodeList()
+		
+	def CommitCode(self):
+		self.card.code = int(self._TextCode.Text)
+		
+	def CommitName(self):
+		self.card.name = self._TextName.Text
+		
+	def CommitAttributes(self):
+		self.card.attributes = [attr.strip() for attr in self._TextAttributes.Text.Split('\n')]
+		
+	def CommitAbilities(self):
+		if self._ComboAbilities.SelectedText:
+			currentphase = self._ComboAbilities.SelectedText
+			if currentphase in self.card.abilities.keys():
+				del self.card.abilities[currentphase]
+			abilities = [attr.strip() for attr in self._TextAbilities.Text.Split('\n')]
+			for ability in abilities:
+				self.card.add_ability(currentphase, ability)
+
+		phases = [item.Text for item in self._ComboAbilities.Items]
+		for phase in phases:
+			if not self.card.abilities[phase]:
+				del self.card.abilities[phase]
+		
+	def CommitInfo(self):
+		if self._ComboInfo.SelectedText:
+			currentinfo = self._ComboInfo.SelectedText
+			if currentinfo in self.card.info.keys():
+				del self.card.info[currentinfo]
+			info = [info.strip() for info in self._TextInfo.Text.Split('\n')]
+			for data in info:
+				self.card.set_info(current, data)
+
+		keys = [item.Text for item in self._ComboInfo.Items]
+		for key in keys:
+			if not self.card.info[key]:
+				del self.card.info[key]
 
 	def SearchTextTextChanged(self, sender, e):
 		self.UpdateCodeList()
