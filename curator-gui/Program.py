@@ -1,5 +1,4 @@
-﻿from __future__ import print_function
-__version__ = "0.1.0"
+﻿__version__ = "0.1.0"
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 import clr
@@ -21,7 +20,7 @@ parser.add_argument("--libname", help="Path to the librarian library file",
 args = parser.parse_args()
 
 if args.version:
-	print('curator-gui v' + __version__)
+	print 'curator-gui v' + __version__
 	sys.exit(0)
 
 Application.EnableVisualStyles()

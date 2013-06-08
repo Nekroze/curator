@@ -6,6 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <RootNamespace>curator_gui</RootNamespace>
     <AssemblyName>curator-gui</AssemblyName>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <DebugInfo>True</DebugInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -18,11 +20,10 @@
     <Optimize>False</Optimize>
     <OutputType>WinExe</OutputType>
     <MainFile>Program.py</MainFile>
-    <DebugInfo>True</DebugInfo>
     <StartArguments>-X:Debug Program.py</StartArguments>
     <StartWorkingDirectory>.\</StartWorkingDirectory>
     <StartAction>Program</StartAction>
-    <StartProgram>C:\Program Files (x86)\SharpDevelop\4.3\bin\..\AddIns\BackendBindings\PythonBinding\ipy.exe</StartProgram>
+    <StartProgram>C:\Program Files (x86)\IronPython 2.7\ipy.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <OutputPath>bin\Release\</OutputPath>
