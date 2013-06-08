@@ -97,6 +97,7 @@ class MainForm(Form):
 		self._ButtonSave.TabIndex = 0
 		self._ButtonSave.Text = "Save"
 		self._ButtonSave.UseVisualStyleBackColor = True
+		self._ButtonSave.Click += self.ButtonSaveClick
 		# 
 		# TextName
 		# 
@@ -274,11 +275,27 @@ class MainForm(Form):
 		self.card = Card(code=code, loadstring=loadstring)
 		self._TextCode.Text = str(self.card.code)
 		self._TextName.Text = self.card.name
+		
+	def SaveCard(self):
+		self.card = Card(int(self._TextCode.Text), self._TextName.Text)
+		with self.library.connection() as libdb:
+			codes = libdb.execute("SELECT code FROM CARDS").fetchall()
+		codes = [fetched[0] for fetched in codes]
+		
+		if self.card.code in codes:
+			with self.library.connection() as libdb:
+				libdb.execute("DELETE from CARDS where code = {0}".format(
+					self.card.code))
+		self.library.save_card(self.card)
+		self.UpdateCodeList()
 
 	def SearchTextTextChanged(self, sender, e):
 		self.UpdateCodeList()
 
 	def CodeListSelectedIndexChanged(self, sender, e):
 		if self._CodeList.SelectedItems:
-			code = eval(self._CodeList.SelectedItems[0].Text)
+			code = int(self._CodeList.SelectedItems[0].Text)
 			self.LoadCard(code)
+
+	def ButtonSaveClick(self, sender, e):
+		self.SaveCard()
