@@ -45,6 +45,7 @@ class MainForm(Form):
 		self._CodeList = System.Windows.Forms.ListView()
 		self._Codes = System.Windows.Forms.ColumnHeader()
 		self._Names = System.Windows.Forms.ColumnHeader()
+		self._ButtonDelete = System.Windows.Forms.Button()
 		self._splitContainer1.BeginInit()
 		self._splitContainer1.Panel1.SuspendLayout()
 		self._splitContainer1.Panel2.SuspendLayout()
@@ -65,6 +66,7 @@ class MainForm(Form):
 		# 
 		# splitContainer1.Panel2
 		# 
+		self._splitContainer1.Panel2.Controls.Add(self._ButtonDelete)
 		self._splitContainer1.Panel2.Controls.Add(self._TextInfo)
 		self._splitContainer1.Panel2.Controls.Add(self._TextAbilities)
 		self._splitContainer1.Panel2.Controls.Add(self._TextAttributes)
@@ -174,7 +176,7 @@ class MainForm(Form):
 		# 
 		# CreateButton
 		# 
-		self._CreateButton.Location = System.Drawing.Point(162, 3)
+		self._CreateButton.Location = System.Drawing.Point(162, 2)
 		self._CreateButton.Name = "CreateButton"
 		self._CreateButton.Size = System.Drawing.Size(47, 20)
 		self._CreateButton.TabIndex = 3
@@ -214,22 +216,20 @@ class MainForm(Form):
 		# 
 		# CodeList
 		# 
+		self._CodeList.Activation = System.Windows.Forms.ItemActivation.OneClick
 		self._CodeList.Columns.AddRange(System.Array[System.Windows.Forms.ColumnHeader](
 			[self._Codes,
 			self._Names]))
 		self._CodeList.FullRowSelect = True
-		self._CodeList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
-		self._CodeList.HideSelection = False
 		self._CodeList.Location = System.Drawing.Point(3, 29)
 		self._CodeList.MultiSelect = False
 		self._CodeList.Name = "CodeList"
+		self._CodeList.ShowGroups = False
 		self._CodeList.Size = System.Drawing.Size(206, 458)
-		self._CodeList.Sorting = System.Windows.Forms.SortOrder.Ascending
 		self._CodeList.TabIndex = 4
 		self._CodeList.UseCompatibleStateImageBehavior = False
 		self._CodeList.View = System.Windows.Forms.View.Details
 		self._CodeList.SelectedIndexChanged += self.CodeListSelectedIndexChanged
-		self._CodeList.DoubleClick += self.CodeListDoubleClick
 		# 
 		# Codes
 		# 
@@ -240,6 +240,16 @@ class MainForm(Form):
 		# 
 		self._Names.Text = "Name"
 		self._Names.Width = 140
+		# 
+		# ButtonDelete
+		# 
+		self._ButtonDelete.Location = System.Drawing.Point(333, 3)
+		self._ButtonDelete.Name = "ButtonDelete"
+		self._ButtonDelete.Size = System.Drawing.Size(46, 21)
+		self._ButtonDelete.TabIndex = 5
+		self._ButtonDelete.Text = "Delete"
+		self._ButtonDelete.UseVisualStyleBackColor = True
+		self._ButtonDelete.Click += self.ButtonDeleteClick
 		# 
 		# MainForm
 		# 
@@ -268,9 +278,8 @@ class MainForm(Form):
 				
 		self._CodeList.Items.Clear()
 		self._CodeList.BeginUpdate()
-		for code in codes:
-			card = self.library.load_card(code, False)
-			pos = len(self._CodeList.Items)
+		for card in [self.library.load_card(code, cache=False) for code in sorted(codes)]:
+			pos = self._CodeList.Items.Count
 			self._CodeList.Items.Add(str(card.code))
 			self._CodeList.Items[pos].SubItems.Add(card.name)
 		self._CodeList.EndUpdate()
@@ -397,10 +406,19 @@ class MainForm(Form):
 	def CreateButtonClick(self, sender, e):
 		self.SaveCard()
 		self.LoadCard(int(self._SearchText.Text))
+		self.UpdateCodeList()
 
-	def CodeListDoubleClick(self, sender, e):
-		if self._CodeList.SelectedItems:
+	def DeleteCard(self, code):
+		with self.library.connection() as libdb:
+			codes = libdb.execute("SELECT code FROM CARDS").fetchall()
+		codes = [fetched[0] for fetched in codes]
+		
+		if code in codes:
 			with self.library.connection() as libdb:
 				libdb.execute("DELETE from CARDS where code = {0}".format(
-					int(self._CodeList.SelectedItems[0].Text)))
+					code))
 			self.UpdateCodeList()
+
+	def ButtonDeleteClick(self, sender, e):
+		if self.card is not None:
+			self.DeleteCard(self.card.code)
