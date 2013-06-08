@@ -224,10 +224,12 @@ class MainForm(Form):
 		self._CodeList.MultiSelect = False
 		self._CodeList.Name = "CodeList"
 		self._CodeList.Size = System.Drawing.Size(206, 458)
+		self._CodeList.Sorting = System.Windows.Forms.SortOrder.Ascending
 		self._CodeList.TabIndex = 4
 		self._CodeList.UseCompatibleStateImageBehavior = False
 		self._CodeList.View = System.Windows.Forms.View.Details
 		self._CodeList.SelectedIndexChanged += self.CodeListSelectedIndexChanged
+		self._CodeList.DoubleClick += self.CodeListDoubleClick
 		# 
 		# Codes
 		# 
@@ -290,6 +292,8 @@ class MainForm(Form):
 		self.UpdateCard()
 		
 	def UpdateCard(self):
+		if self.card is None:
+			return None
 		self._TextCode.Text = str(self.card.code)
 		self._TextName.Text = self.card.name
 		self._TextAttributes.Text = NewLine.join(self.card.attributes)
@@ -301,7 +305,8 @@ class MainForm(Form):
 		self._TextInfo.Text = ""
 		for key in self.card.info.keys():
 			self._ComboInfo.Items.Add(key)
-		
+		return None
+
 	def SaveCard(self):
 		if not self._TextCode.Text:
 			return None
@@ -318,7 +323,7 @@ class MainForm(Form):
 			with self.library.connection() as libdb:
 				libdb.execute("DELETE from CARDS where code = {0}".format(
 					self.card.code))
-		self.library.save_card(self.card)
+		self.library.save_card(self.card, False)
 		self.UpdateCodeList()
 		
 	def CommitCode(self):
@@ -342,8 +347,9 @@ class MainForm(Form):
 		phases = [item.Text for item in self._ComboAbilities.Items]
 		for phase in phases:
 			if not self.card.abilities[phase]:
-				#self._ComboAbilities.Items.remove(key)
+				self._ComboAbilities.Items.remove(key)
 				del self.card.abilities[phase]
+		return None
 		
 	def CommitInfo(self):
 		if self._ComboInfo.SelectedText:
@@ -357,8 +363,9 @@ class MainForm(Form):
 		keys = [item.Text for item in self._ComboInfo.Items]
 		for key in keys:
 			if not self.card.info[key]:
-				#self._ComboInfo.Items.remove(key)
+				self._ComboInfo.Items.remove(key)
 				del self.card.info[key]
+		return None
 
 	def SearchTextTextChanged(self, sender, e):
 		self.UpdateCodeList()
@@ -368,6 +375,7 @@ class MainForm(Form):
 			code = int(self._CodeList.SelectedItems[0].Text)
 			self.SaveCard()
 			self.LoadCard(code)
+		return None
 
 	def ButtonSaveClick(self, sender, e):
 		self.SaveCard()
@@ -377,12 +385,22 @@ class MainForm(Form):
 		key = self._ComboAbilities.SelectedText
 		if key in self.card.abilities.keys():
 			self._TextAbilities.Text = ','.join(self.card.abilities[key])
+		return None
 
 	def ComboInfoSelectedValueChanged(self, sender, e):
 		self.CommitInfo()
 		key = self._ComboInfo.SelectedText
 		if key in self.card.info.keys():
 			self._TextInfo.Text = ','.join(self.card.info[key])
+		return None
 
 	def CreateButtonClick(self, sender, e):
+		self.SaveCard()
 		self.LoadCard(int(self._SearchText.Text))
+
+	def CodeListDoubleClick(self, sender, e):
+		if self._CodeList.SelectedItems:
+			with self.library.connection() as libdb:
+				libdb.execute("DELETE from CARDS where code = {0}".format(
+					int(self._CodeList.SelectedItems[0].Text)))
+			self.UpdateCodeList()
