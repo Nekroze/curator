@@ -5,6 +5,7 @@ import System.Windows.Forms
 
 from System.Drawing import *
 from System.Windows.Forms import *
+from System.Environment import NewLine
 
 from librarian.library import Library
 from librarian.card import Card
@@ -152,6 +153,7 @@ class MainForm(Form):
 		self._ComboAbilities.Name = "ComboAbilities"
 		self._ComboAbilities.Size = System.Drawing.Size(376, 21)
 		self._ComboAbilities.TabIndex = 9
+		self._ComboAbilities.SelectedValueChanged += self.ComboAbilitiesSelectedValueChanged
 		# 
 		# labelInfo
 		# 
@@ -168,6 +170,7 @@ class MainForm(Form):
 		self._ComboInfo.Name = "ComboInfo"
 		self._ComboInfo.Size = System.Drawing.Size(376, 21)
 		self._ComboInfo.TabIndex = 11
+		self._ComboInfo.SelectedValueChanged += self.ComboInfoSelectedValueChanged
 		# 
 		# CreateButton
 		# 
@@ -177,28 +180,35 @@ class MainForm(Form):
 		self._CreateButton.TabIndex = 3
 		self._CreateButton.Text = "Create"
 		self._CreateButton.UseVisualStyleBackColor = True
+		self._CreateButton.Click += self.CreateButtonClick
 		# 
 		# TextAttributes
 		# 
+		self._TextAttributes.AcceptsReturn = True
 		self._TextAttributes.Location = System.Drawing.Point(3, 68)
 		self._TextAttributes.Multiline = True
 		self._TextAttributes.Name = "TextAttributes"
+		self._TextAttributes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
 		self._TextAttributes.Size = System.Drawing.Size(376, 69)
 		self._TextAttributes.TabIndex = 12
 		# 
 		# TextAbilities
 		# 
+		self._TextAbilities.AcceptsReturn = True
 		self._TextAbilities.Location = System.Drawing.Point(3, 184)
 		self._TextAbilities.Multiline = True
 		self._TextAbilities.Name = "TextAbilities"
+		self._TextAbilities.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
 		self._TextAbilities.Size = System.Drawing.Size(376, 95)
 		self._TextAbilities.TabIndex = 13
 		# 
 		# TextInfo
 		# 
+		self._TextInfo.AcceptsReturn = True
 		self._TextInfo.Location = System.Drawing.Point(3, 325)
 		self._TextInfo.Multiline = True
 		self._TextInfo.Name = "TextInfo"
+		self._TextInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
 		self._TextInfo.Size = System.Drawing.Size(376, 133)
 		self._TextInfo.TabIndex = 14
 		# 
@@ -207,7 +217,11 @@ class MainForm(Form):
 		self._CodeList.Columns.AddRange(System.Array[System.Windows.Forms.ColumnHeader](
 			[self._Codes,
 			self._Names]))
+		self._CodeList.FullRowSelect = True
+		self._CodeList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
+		self._CodeList.HideSelection = False
 		self._CodeList.Location = System.Drawing.Point(3, 29)
+		self._CodeList.MultiSelect = False
 		self._CodeList.Name = "CodeList"
 		self._CodeList.Size = System.Drawing.Size(206, 458)
 		self._CodeList.TabIndex = 4
@@ -273,20 +287,29 @@ class MainForm(Form):
 			    		str(code))).fetchone()
 			    loadstring = loadstring[0] if loadstring else None
 		self.card = Card(code=code, loadstring=loadstring)
+		self.UpdateCard()
+		
+	def UpdateCard(self):
 		self._TextCode.Text = str(self.card.code)
 		self._TextName.Text = self.card.name
-		self._TextAttributes.Text = '\n'.join(self.card.attributes)
+		self._TextAttributes.Text = NewLine.join(self.card.attributes)
 		self._ComboAbilities.Items.Clear()
+		self._TextAbilities.Text = ""
 		for key in self.card.abilities.keys():
 			self._ComboAbilities.Items.Add(key)
 		self._ComboInfo.Items.Clear()
+		self._TextInfo.Text = ""
 		for key in self.card.info.keys():
 			self._ComboInfo.Items.Add(key)
 		
 	def SaveCard(self):
+		if not self._TextCode.Text:
+			return None
 		self.CommitCode()
 		self.CommitName()
 		self.CommitAttributes()
+		self.CommitAbilities()
+		self.CommitInfo()
 		with self.library.connection() as libdb:
 			codes = libdb.execute("SELECT code FROM CARDS").fetchall()
 		codes = [fetched[0] for fetched in codes]
@@ -305,20 +328,21 @@ class MainForm(Form):
 		self.card.name = self._TextName.Text
 		
 	def CommitAttributes(self):
-		self.card.attributes = [attr.strip() for attr in self._TextAttributes.Text.Split('\n')]
+		self.card.attributes = [attr.strip() for attr in self._TextAttributes.Text.Split("\n")]
 		
 	def CommitAbilities(self):
 		if self._ComboAbilities.SelectedText:
 			currentphase = self._ComboAbilities.SelectedText
 			if currentphase in self.card.abilities.keys():
 				del self.card.abilities[currentphase]
-			abilities = [attr.strip() for attr in self._TextAbilities.Text.Split('\n')]
+			abilities = [attr.strip() for attr in self._TextAbilities.Text.Split(NewLine)]
 			for ability in abilities:
 				self.card.add_ability(currentphase, ability)
 
 		phases = [item.Text for item in self._ComboAbilities.Items]
 		for phase in phases:
 			if not self.card.abilities[phase]:
+				#self._ComboAbilities.Items.remove(key)
 				del self.card.abilities[phase]
 		
 	def CommitInfo(self):
@@ -326,13 +350,14 @@ class MainForm(Form):
 			currentinfo = self._ComboInfo.SelectedText
 			if currentinfo in self.card.info.keys():
 				del self.card.info[currentinfo]
-			info = [info.strip() for info in self._TextInfo.Text.Split('\n')]
+			info = [info.strip() for info in self._TextInfo.Text.Split(NewLine)]
 			for data in info:
 				self.card.set_info(current, data)
 
 		keys = [item.Text for item in self._ComboInfo.Items]
 		for key in keys:
 			if not self.card.info[key]:
+				#self._ComboInfo.Items.remove(key)
 				del self.card.info[key]
 
 	def SearchTextTextChanged(self, sender, e):
@@ -341,7 +366,23 @@ class MainForm(Form):
 	def CodeListSelectedIndexChanged(self, sender, e):
 		if self._CodeList.SelectedItems:
 			code = int(self._CodeList.SelectedItems[0].Text)
+			self.SaveCard()
 			self.LoadCard(code)
 
 	def ButtonSaveClick(self, sender, e):
 		self.SaveCard()
+
+	def ComboAbilitiesSelectedValueChanged(self, sender, e):
+		self.CommitAbilities()
+		key = self._ComboAbilities.SelectedText
+		if key in self.card.abilities.keys():
+			self._TextAbilities.Text = ','.join(self.card.abilities[key])
+
+	def ComboInfoSelectedValueChanged(self, sender, e):
+		self.CommitInfo()
+		key = self._ComboInfo.SelectedText
+		if key in self.card.info.keys():
+			self._TextInfo.Text = ','.join(self.card.info[key])
+
+	def CreateButtonClick(self, sender, e):
+		self.LoadCard(int(self._SearchText.Text))
