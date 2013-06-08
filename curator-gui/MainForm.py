@@ -4,14 +4,25 @@ import System.Windows.Forms
 from System.Drawing import *
 from System.Windows.Forms import *
 
+from librarian.library import Library
+import os
+
+
 class MainForm(Form):
-	def __init__(self):
+	def __init__(self, dbname):
 		self.InitializeComponent()
+		if dbname is None:
+			self.dbname = "library.lbr"
+		else:
+			self.dbname = dbname
+		self.library = Library(self.dbname)
+		if not os.path.exists(self.dbname):
+			self.library.create_db()
+		self.UpdateCodeList()
 	
 	def InitializeComponent(self):
 		self._splitContainer1 = System.Windows.Forms.SplitContainer()
 		self._SearchText = System.Windows.Forms.TextBox()
-		self._CodeList = System.Windows.Forms.ListBox()
 		self._LoadButton = System.Windows.Forms.Button()
 		self._ButtonSave = System.Windows.Forms.Button()
 		self._TextName = System.Windows.Forms.TextBox()
@@ -27,6 +38,9 @@ class MainForm(Form):
 		self._TextAttributes = System.Windows.Forms.TextBox()
 		self._TextAbilities = System.Windows.Forms.TextBox()
 		self._TextInfo = System.Windows.Forms.TextBox()
+		self._CodeList = System.Windows.Forms.ListView()
+		self._Codes = System.Windows.Forms.ColumnHeader()
+		self._Names = System.Windows.Forms.ColumnHeader()
 		self._splitContainer1.BeginInit()
 		self._splitContainer1.Panel1.SuspendLayout()
 		self._splitContainer1.Panel2.SuspendLayout()
@@ -41,9 +55,9 @@ class MainForm(Form):
 		# 
 		# splitContainer1.Panel1
 		# 
+		self._splitContainer1.Panel1.Controls.Add(self._CodeList)
 		self._splitContainer1.Panel1.Controls.Add(self._CreateButton)
 		self._splitContainer1.Panel1.Controls.Add(self._LoadButton)
-		self._splitContainer1.Panel1.Controls.Add(self._CodeList)
 		self._splitContainer1.Panel1.Controls.Add(self._SearchText)
 		# 
 		# splitContainer1.Panel2
@@ -71,19 +85,7 @@ class MainForm(Form):
 		self._SearchText.Name = "SearchText"
 		self._SearchText.Size = System.Drawing.Size(153, 20)
 		self._SearchText.TabIndex = 0
-		# 
-		# CodeList
-		# 
-		self._CodeList.FormattingEnabled = True
-		self._CodeList.Items.AddRange(System.Array[System.Object](
-			["test",
-			"test2"]))
-		self._CodeList.Location = System.Drawing.Point(3, 29)
-		self._CodeList.MultiColumn = True
-		self._CodeList.Name = "CodeList"
-		self._CodeList.Size = System.Drawing.Size(206, 433)
-		self._CodeList.Sorted = True
-		self._CodeList.TabIndex = 1
+		self._SearchText.TextChanged += self.SearchTextTextChanged
 		# 
 		# LoadButton
 		# 
@@ -206,6 +208,28 @@ class MainForm(Form):
 		self._TextInfo.Size = System.Drawing.Size(376, 133)
 		self._TextInfo.TabIndex = 14
 		# 
+		# CodeList
+		# 
+		self._CodeList.Columns.AddRange(System.Array[System.Windows.Forms.ColumnHeader](
+			[self._Codes,
+			self._Names]))
+		self._CodeList.Location = System.Drawing.Point(3, 29)
+		self._CodeList.Name = "CodeList"
+		self._CodeList.Size = System.Drawing.Size(206, 429)
+		self._CodeList.TabIndex = 4
+		self._CodeList.UseCompatibleStateImageBehavior = False
+		self._CodeList.View = System.Windows.Forms.View.Details
+		# 
+		# Codes
+		# 
+		self._Codes.Text = "Code"
+		self._Codes.Width = 62
+		# 
+		# Names
+		# 
+		self._Names.Text = "Name"
+		self._Names.Width = 140
+		# 
 		# MainForm
 		# 
 		self.ClientSize = System.Drawing.Size(600, 490)
@@ -219,3 +243,26 @@ class MainForm(Form):
 		self._splitContainer1.EndInit()
 		self._splitContainer1.ResumeLayout(False)
 		self.ResumeLayout(False)
+		
+	def UpdateCodeList(self):
+		"""Update the CodeList display taking SearchText into account."""
+		codes = []
+		with self.library.connection() as libdb:
+			if self._SearchText.Text:
+				codes = libdb.execute(
+					"SELECT code FROM CARDS WHERE code like ?",
+					(self._SearchText.Text + '%',)).fetchall()
+			else:
+				codes = libdb.execute("SELECT code FROM CARDS").fetchall()
+				
+		self._CodeList.Items.Clear()
+		self._CodeList.BeginUpdate()
+		for code in codes:
+			card = self.library.load_card(code, False)
+			pos = len(self._CodeList.Items)
+			self._CodeList.Items.Add(str(card.code))
+			self._CodeList.Items[pos].SubItems.Add(card.name)
+		self._CodeList.EndUpdate()
+
+	def SearchTextTextChanged(self, sender, e):
+		self.UpdateCodeList()
