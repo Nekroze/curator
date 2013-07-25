@@ -9,7 +9,7 @@ except ImportError:
     readline = None
 
 
-class Console(object, cmd.Cmd):
+class Console(cmd.Cmd):
     """Console is a CLI component based on the cmd module."""
     def __init__(self):
         """

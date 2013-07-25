@@ -25,7 +25,7 @@ class CLE(Console):
         Console.__init__(self)
         self.colormap = colormap
         self.card = card
-        self.prompt = "{Csym}[{Ckey}EDIT{Csym}]>".format(**self.colormap)
+        self.prompt = "{Csym}[{Ckey}EDIT{Csym}]>{Cres}".format(**self.colormap)
 
     def do_commit(self, _):
         """
@@ -160,5 +160,5 @@ class CLE(Console):
 
     def preloop(self):
         """Display header at start."""
-        super(CLE, self).preloop()
+        Console.preloop(self)
         self.header()

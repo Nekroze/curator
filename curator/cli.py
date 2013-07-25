@@ -5,6 +5,7 @@ __email__ = 'nekroze@eturnilnetwork.com'
 import os
 import sys
 from colorama import Fore
+from colorama import Style
 from librarian.library import Library
 from librarian.card import Card
 from .console import Console
@@ -35,11 +36,9 @@ class CLI(Console):
         tables if the database filename doesnt exist.
         """
         Console.__init__(self)
-        self.colormap = {}
-        self.colormap["Cval"] = Fore.YELLOW
-        self.colormap["Csym"] = Fore.GREEN
-        self.colormap["Ckey"] = Fore.CYAN
-        self.prompt = "{Csym}[{Ckey}HOME{Csym}]>".format(**self.colormap)
+        self.colormap = dict(Cval=Fore.YELLOW, Csym=Fore.GREEN, Ckey=Fore.CYAN,
+                             Cres=Style.RESET_ALL)
+        self.prompt = "{Csym}[{Ckey}HOME{Csym}]>{Cres}".format(**self.colormap)
         dbname = "library.lbr" if dbname is None else dbname
         self.library = Library(dbname)
         if not os.path.exists(dbname):

@@ -24,7 +24,7 @@ def driver():
         print('curator-cli v' + __version__)
         sys.exit(0)
 
-    colorama.init(autoreset=True)
+    colorama.init()
     CLI(args.libname).cmdloop()
 
 if __name__ == '__main__':
