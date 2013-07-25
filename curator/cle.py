@@ -4,8 +4,6 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 import os
 import sys
-from colorama import Fore
-from librarian.card import Card
 from .console import Console
 
 
