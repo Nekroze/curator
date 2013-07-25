@@ -6,6 +6,7 @@ import os
 import sys
 from colorama import Fore
 from librarian.library import Library
+from librarian.card import Card
 from .console import Console
 from .cle import CLE
 
@@ -46,69 +47,42 @@ class CLI(Console):
 
     def do_edit(self, args):
         """Edit a card. Can take a card code to edit."""
-        code = int(args[0]) if args else 0
+        code = int(args) if args else 0
+        card = self.library.load_card(code, cache=False)
+        if card is None:
+            card = Card(code)
 
-        with self.library.connection() as libdb:
-            codes = libdb.execute("SELECT code FROM CARDS").fetchall()
-        codes = [fetched[0] for fetched in codes]
-
-        loadstring = None
-        if code in codes:
-            with self.library.connection() as libdb:
-                loadstring = libdb.execute(
-                    "SELECT card FROM CARDS WHERE code = {0}".format(
-                        str(code))).fetchone()
-                loadstring = loadstring[0] if loadstring else None
-
-        cle = CLE(self.colormap, code=code, loadstring=loadstring)
+        cle = CLE(self.colormap, card)
         cle.cmdloop()
         card = cle.card
 
         if card is None:
             return clear()
 
-        if card.code in codes:
-            with self.library.connection() as libdb:
-                libdb.execute("DELETE from CARDS where code = {0}".format(
-                    card.code))
         self.library.save_card(card)
         clear()
 
     def do_delete(self, args):
         """Delete a card by code."""
         if args:
-            code = int(args[0])
+            code = int(args)
         else:
             clear()
             print("Input code to delete.")
             code = int(readinput("|>"))
 
         with self.library.connection() as libdb:
-            codes = libdb.execute("SELECT code FROM CARDS").fetchall()
-        codes = [fetched[0] for fetched in codes]
-
-        if code in codes:
-            with self.library.connection() as libdb:
-                libdb.execute("DELETE from CARDS where code = {0}".format(
-                    code))
-        else:
-            print("No card could be found to delete")
+            libdb.execute("DELETE from CARDS where code = {0}".format(code))
 
     def do_list(self, args):
         """List all stored cards. Can search by a code prefix."""
-        codes = []
-        with self.library.connection() as libdb:
-            if args:
-                codes = libdb.execute(
-                    "SELECT code FROM CARDS WHERE code like ?",
-                    (args[0] + '%',)).fetchall()
-            else:
-                codes = libdb.execute("SELECT code FROM CARDS").fetchall()
+        code = args if args else None
+        results = self.library.filter_search(code=code)
 
-        if not len(codes):
+        if not len(results):
             print("No cards could be found")
+            return None
 
-        for code in codes:
-            card = self.library.load_card(code, False)
-            print("{Cval}{0}{Csym}: {Cval}{1}".format(card.code, card.name,
+        for codename in results:
+            print("{Cval}{0}{Csym}: {Cval}{1}".format(*codename,
                                                       **self.colormap))

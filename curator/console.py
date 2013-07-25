@@ -54,7 +54,7 @@ class Console(object, cmd.Cmd):
         """
         Called after a line has been input but before it has been interpreted.
         """
-        self._hist += [line.strip()]
+        self._hist.append(line.strip())
         return line
 
     def postcmd(self, stop, line):

@@ -19,14 +19,14 @@ def clear():
 
 class CLE(Console):
     """The command line editor for cards."""
-    def __init__(self, colormap, code=None, loadstring=None):
+    def __init__(self, colormap, card):
         """
         Can take up to two arguments to define the code and name of the new
         card before starting the edit although it is optional.
         """
         Console.__init__(self)
         self.colormap = colormap
-        self.card = Card(code=code, loadstring=loadstring)
+        self.card = card
         self.prompt = "{Csym}[{Ckey}EDIT{Csym}]>".format(**self.colormap)
 
     def do_commit(self, _):
@@ -148,7 +148,7 @@ class CLE(Console):
 
         print("{Csym}:::::{Ckey}Abilities".format(**self.colormap))
         for phase, abilities in self.card.abilities.items():
-            print("{Cval}{0}".format(phase))
+            print("{Cval}{0}".format(phase, **self.colormap))
             for index, ability in enumerate(abilities):
                 print("{Csym}|_____[{Ckey}{0}{Csym}]{Cval}{1}".format(
                     str(index), ability, **self.colormap))
