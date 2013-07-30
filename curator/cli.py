@@ -115,7 +115,7 @@ class CLI(Console):
                 break
             ability = readinput("Ability\n|>")
             if not ability:
-                break
+                ability = '*'
             abilities[phase] = ability
         if not abilities:
             abilities = None
@@ -137,7 +137,7 @@ class CLI(Console):
                 break
             value = readinput("Value\n|>")
             if not value:
-                break
+                value = '*'
             info[key] = value
         if not info:
             info = None
