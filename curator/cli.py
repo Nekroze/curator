@@ -90,12 +90,12 @@ class CLI(Console):
             print("{Cval}{0}{Csym}: {Cval}{1}".format(*codename,
                                                       **self.colormap))
 
-    def do_setting(self, args):
+    def do_setting(self, _):
         """Change settings for this session."""
         print("Maximum cards to return from list or search.")
         self.list_max = int(readinput("|>"))
 
-    def do_search(self, args):
+    def do_search(self, _):
         """
         Perform an advanced card search. Input nothing to skip filter or '*'
         for an info or ability as a wildcard.

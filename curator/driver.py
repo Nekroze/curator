@@ -7,21 +7,20 @@ from .cli import CLI
 import colorama
 import argparse
 import sys
-import os
 
 
 def main():
     """Drive the usage of curator-cli."""
-    parser = argparse.ArgumentParser(description =
-                                     "library access from the command line.")
+    parser = argparse.ArgumentParser(
+        description="library access from the command line.")
     parser.add_argument("-v", "--version", help="Display curator-cli version",
-                        action="store_true", default = False)
+                        action="store_true", default=False)
     parser.add_argument("--libname", help="Path to the librarian library file",
-                        type=str, default = None)
+                        type=str, default=None)
     args = parser.parse_args()
 
     if args.version:
-        print('curator-cli v' + __version__)
+        print('curator-cli v'+__version__)
         sys.exit(0)
 
     colorama.init()
