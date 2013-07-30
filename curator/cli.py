@@ -96,5 +96,61 @@ class CLI(Console):
         self.list_max = int(readinput("|>"))
 
     def do_search(self, args):
-        """Perform an advanced card search."""
-        pass
+        """
+        Perform an advanced card search. Input nothing to skip filter or '*'
+        for an info or ability as a wildcard.
+        """
+        code = readinput("Code\n|>")
+        if not code:
+            code = None
+        name = readinput("Name\n|>")
+        if not name:
+            name = None
+
+        abilities = {}
+        while True:
+            print("Ability:")
+            phase = readinput("Phase\n|>")
+            if not phase:
+                break
+            ability = readinput("Ability\n|>")
+            if not ability:
+                break
+            abilities[phase] = ability
+        if not abilities:
+            abilities = None
+
+        attributes = []
+        while True:
+            attrib = readinput("Attribute\n|>")
+            if not attrib:
+                break
+            attributes.append(attrib)
+        if not attributes:
+            attributes = None
+
+        info = {}
+        while True:
+            print("Info:")
+            key = readinput("Key\n|>")
+            if not key:
+                break
+            value = readinput("Value\n|>")
+            if not value:
+                break
+            info[key] = value
+        if not info:
+            info = None
+
+        results = self.library.filter_search(code, name, abilities, attributes,
+                                             info)
+        if not len(results):
+            print("No cards could be found")
+            return None
+
+        if len(results) > self.list_max:
+            results = results[:self.list_max]
+
+        for codename in results:
+            print("{Cval}{0}{Csym}: {Cval}{1}".format(*codename,
+                                                      **self.colormap))
