@@ -43,6 +43,7 @@ class CLI(Console):
         self.library = Library(dbname)
         if not os.path.exists(dbname):
             self.library.create_db()
+        self.list_max = 50
 
     def do_edit(self, args):
         """Edit a card. Can take a card code to edit."""
@@ -82,6 +83,18 @@ class CLI(Console):
             print("No cards could be found")
             return None
 
+        if len(results) > self.list_max:
+            results = results[:self.list_max]
+
         for codename in results:
             print("{Cval}{0}{Csym}: {Cval}{1}".format(*codename,
                                                       **self.colormap))
+
+    def do_setting(self, args):
+        """Change settings for this session."""
+        print("Maximum cards to return from list or search.")
+        self.list_max = int(readinput("|>"))
+
+    def do_search(self, args):
+        """Perform an advanced card search."""
+        pass
