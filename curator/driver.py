@@ -1,16 +1,16 @@
-#!/usr/bin/env python
+"""Command line driver entry point."""
 from __future__ import print_function
 __version__ = "0.1.0"
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
-from curator.cli import CLI
+from .cli import CLI
 import colorama
 import argparse
 import sys
 import os
 
 
-def driver():
+def main():
     """Drive the usage of curator-cli."""
     parser = argparse.ArgumentParser(description =
                                      "library access from the command line.")
@@ -26,6 +26,3 @@ def driver():
 
     colorama.init()
     CLI(args.libname).cmdloop()
-
-if __name__ == '__main__':
-    driver()
