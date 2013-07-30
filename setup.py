@@ -15,7 +15,7 @@ PROJECTNAME = 'curator'
 PROJECTSITE = 'nekroze.eturnilnetwork.com'
 PROJECTDESC = 'None'
 PROJECTLICENSE = 'MIT'
-PLATFORMS = ['*nix', 'windows']
+PLATFORMS = ['any']
 
 kwds = {}
 kwds['version'] = __version__
