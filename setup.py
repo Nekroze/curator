@@ -9,7 +9,7 @@ from setuptools import setup
 __version__ = '0.1.0'
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
-SOURCE = 'curator'
+SOURCE = 'librarian-curator'
 TESTDIR = 'test'
 PROJECTNAME = 'curator'
 PROJECTSITE = 'nekroze.eturnilnetwork.com'
