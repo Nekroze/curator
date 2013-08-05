@@ -15,8 +15,8 @@ def main():
         description="library access from the command line.")
     parser.add_argument("-v", "--version", help="Display curator-cli version",
                         action="store_true", default=False)
-    parser.add_argument("--libname", help="Path to the librarian library file",
-                        type=str, default=None)
+    parser.add_argument("libname", help="Path to the librarian library file",
+                        type=str, default="library.lbr")
     args = parser.parse_args()
 
     if args.version:
